@@ -126,6 +126,21 @@
         .achievement-card .icon { font-size: 2rem; margin-bottom: 0.5rem; }
         .achievement-card .name { font-size: 0.8rem; font-weight: bold; margin-bottom: 0.3rem; }
         .achievement-card .desc { font-size: 0.65rem; color: #888; }
+        .activity-section { margin-top: 1.5rem; }
+        .activity-section h3 { font-size: 1rem; color: #888; margin-bottom: 0.8rem; }
+        .heatmap { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; max-width: 100%; }
+        .heatmap-day {
+            aspect-ratio: 1;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.05);
+            min-width: 0;
+        }
+        .heatmap-day.l1 { background: rgba(0, 212, 255, 0.3); }
+        .heatmap-day.l2 { background: rgba(0, 212, 255, 0.5); }
+        .heatmap-day.l3 { background: rgba(0, 212, 255, 0.7); }
+        .heatmap-day.l4 { background: #00d4ff; }
+        .heatmap-labels { display: flex; justify-content: space-between; font-size: 0.65rem; color: #666; margin-top: 0.3rem; }
+        .heatmap-months { display: flex; justify-content: space-between; font-size: 0.7rem; color: #888; margin-bottom: 0.5rem; }
     </style>
 </head>
 <body>
@@ -213,6 +228,16 @@
                     <h2>🏅 Achievements</h2>
                     <div class="achievement-grid" id="achievements"></div>
                 </div>
+
+                <div class="section activity-section">
+                    <h2>📊 Activity</h2>
+                    <div class="heatmap-months" id="heatmapMonths"></div>
+                    <div class="heatmap" id="heatmap"></div>
+                    <div class="heatmap-labels">
+                        <span>Less</span>
+                        <span>More</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -278,6 +303,32 @@
                     <div class="desc">${a.desc}</div>
                 </div>
             `).join('');
+
+            // Activity heatmap
+            const activityData = {};
+            if (localStats.dailyHistory) {
+                localStats.dailyHistory.forEach(d => { activityData[d.date] = (activityData[d.date] || 0) + 1; });
+            }
+            if (localStats.streakHistory) {
+                localStats.streakHistory.forEach(s => { activityData[s.date] = (activityData[s.date] || 0) + 1; });
+            }
+            const today = new Date();
+            const days = [];
+            for (let i = 83; i >= 0; i--) {
+                const d = new Date(today);
+                d.setDate(d.getDate() - i);
+                days.push(d.toISOString().split('T')[0]);
+            }
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const firstDay = new Date(days[0]);
+            const lastDay = new Date(days[days.length - 1]);
+            document.getElementById('heatmapMonths').textContent = `${months[firstDay.getMonth()]} - ${months[lastDay.getMonth()]} ${lastDay.getFullYear()}`;
+            const heatmapEl = document.getElementById('heatmap');
+            heatmapEl.innerHTML = days.map(day => {
+                const count = activityData[day] || 0;
+                const level = count === 0 ? '' : count === 1 ? 'l1' : count === 2 ? 'l2' : count <= 4 ? 'l3' : 'l4';
+                return `<div class="heatmap-day ${level}" title="${day}: ${count} games"></div>`;
+            }).join('');
         }
 
         async function loadStats() {
