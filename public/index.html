@@ -89,6 +89,9 @@
         .mode-btn.endless { border-color: #e67e22; }
         .mode-btn.endless:hover { border-color: #d35400; color: #e67e22; }
         .mode-btn.endless.active { background: linear-gradient(90deg, #e67e22, #d35400); border-color: transparent; color: white; }
+        .quick-play-btn { padding: 0.5rem 1.5rem; background: linear-gradient(90deg, #00d4ff, #7b2cbf); border: none; border-radius: 25px; color: #fff; font-weight: bold; cursor: pointer; font-size: 0.9rem; margin-left: 0.5rem; transition: transform 0.2s; }
+        .quick-play-btn:hover { transform: scale(1.05); }
+        .quick-play-btn:active { transform: scale(0.95); }
         .tournament-info { text-align: center; font-size: 0.75rem; color: #9b59b6; margin-top: -0.5rem; margin-bottom: 0.5rem; }
         .endless-info { text-align: center; font-size: 0.8rem; color: #e67e22; margin-top: -0.5rem; margin-bottom: 0.5rem; font-weight: bold; }
         .endless-info .level { font-size: 1.1rem; }
@@ -366,6 +369,10 @@
                 <a href="/stats.html" style="color:#888;font-size:0.8rem;text-decoration:none;padding:0.3rem 0.8rem;background:rgba(255,255,255,0.05);border-radius:15px;">📊 Stats</a>
             </div>
         </header>
+
+        <div style="text-align:center;margin-bottom:0.8rem;">
+            <button class="quick-play-btn" onclick="quickPlay()">⚡ Quick Play!</button>
+        </div>
 
         <div class="mode-selector">
             <button class="mode-btn active" onclick="setMode('practice')">Practice</button>
@@ -862,6 +869,12 @@
             document.getElementById('tipsPanel').classList.toggle('active');
         }
 
+        function quickPlay() {
+            const modes = ['practice', 'daily', 'timed', 'endless'];
+            const randomMode = modes[Math.floor(Math.random() * modes.length)];
+            setMode(randomMode);
+        }
+
         function loadTheme() {
             const saved = localStorage.getItem('ai-or-not-theme');
             if (saved === 'light') {
@@ -1082,6 +1095,13 @@
                 else stats.dailyHistory.push({ date: dailySeed, score, accuracy: totalGuesses > 0 ? Math.round((correctGuesses / totalGuesses) * 100) : 0 });
                 stats.dailyHistory.sort((a, b) => b.date.localeCompare(a.date));
                 stats.dailyHistory = stats.dailyHistory.slice(0, 30);
+            }
+            if (bestStreak >= 3) {
+                if (!stats.streakHistory) stats.streakHistory = [];
+                const today = new Date().toISOString().split('T')[0];
+                stats.streakHistory.push({ date: today, streak: bestStreak, mode });
+                stats.streakHistory.sort((a, b) => b.streak - a.streak);
+                stats.streakHistory = stats.streakHistory.slice(0, 20);
             }
             localStorage.setItem('ai-or-not-stats', JSON.stringify(stats));
         }
