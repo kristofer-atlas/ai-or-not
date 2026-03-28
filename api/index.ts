@@ -2,7 +2,13 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { readFileSync } from "fs";
 import { join } from "path";
 
-const imageSets = [
+interface ImageSet {
+  real: string;
+  aiIndex: number;
+  category: string;
+}
+
+const imageSets: ImageSet[] = [
   { real: "https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=600&h=600&fit=crop", aiIndex: 0, category: "landscape" },
   { real: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=600&fit=crop", aiIndex: 1, category: "portrait" },
   { real: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&h=600&fit=crop", aiIndex: 2, category: "landscape" },
@@ -27,10 +33,15 @@ const imageSets = [
 
 const categories = ["landscape", "portrait", "animal", "nature", "architecture", "fantasy"];
 
-const leaderboard: { name: string; score: number; difficulty: string; date: string }[] = [];
-const tournamentLeaderboard: { name: string; score: number; week: string; date: string }[] = [];
+interface LeaderboardEntry { name: string; score: number; difficulty: string; date: string }
+interface TournamentEntry { name: string; score: number; week: string; date: string }
+interface Session { aiPosition: number; difficulty: string; startTime: number }
+interface DailyStat { games: number; correct: number; players: Set<string> }
+
+const leaderboard: LeaderboardEntry[] = [];
+const tournamentLeaderboard: TournamentEntry[] = [];
 const globalStats = { totalGames: 0, totalCorrect: 0, totalPlayed: 0, bestScore: 0 };
-const dailyStats: Record<string, { games: number; correct: number; players: Set<string> }> = {};
+const dailyStats: Record<string, DailyStat> = {};
 
 function getWeekSeed(): string {
   const now = new Date();
@@ -39,7 +50,7 @@ function getWeekSeed(): string {
   return `${now.getFullYear()}-W${weekNum}`;
 }
 
-const sessions = new Map<string, { aiPosition: number; difficulty: string; startTime: number }>();
+const sessions = new Map<string, Session>();
 
 async function fetchImageAsDataUrl(url: string): Promise<string> {
   if (url.startsWith("/")) {
@@ -71,7 +82,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       availableSets = imageSets;
     }
     
-    let shuffledIndices = availableSets.map((_, i) => i);
+    let shuffledIndices: number[] = availableSets.map((_, i) => i);
     
     if (seed) {
       let hash = 0;
@@ -79,22 +90,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       hash = Math.abs(hash);
       for (let i = shuffledIndices.length - 1; i > 0; i--) {
         const j = (hash + i * 17) % (i + 1);
-        [shuffledIndices[i], shuffledIndices[j]] = [shuffledIndices[j], shuffledIndices[i]];
+        const temp = shuffledIndices[i]!;
+        shuffledIndices[i] = shuffledIndices[j]!;
+        shuffledIndices[j] = temp;
       }
     } else {
       shuffledIndices = shuffledIndices.sort(() => Math.random() - 0.5);
     }
     
-    let poolSize = availableSets.length;
-    if (difficulty === "hard") {
-      poolSize = Math.min(10, availableSets.length);
-    } else if (difficulty === "easy") {
-      poolSize = Math.min(5, availableSets.length);
-    }
-    
-    const setIndex = shuffledIndices[0];
+    const setIndex = shuffledIndices[0] ?? 0;
     const aiPosition = Math.random() < 0.5 ? 0 : 1;
-    const set = availableSets[setIndex];
+    const set = availableSets[setIndex]!;
 
     const [img0, img1] = await Promise.all([
       fetchImageAsDataUrl(set.real),
@@ -145,10 +151,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (action === "leaderboard" && req.method === "POST") {
     const body = await req.json().catch(() => ({}));
-    const { name, score, difficulty } = body;
+    const name = body.name as string | undefined;
+    const score = body.score as number | undefined;
+    const difficulty = (body.difficulty as string | undefined) || "normal";
     if (name && typeof score === "number") {
-      const date = new Date().toISOString().split("T")[0];
-      leaderboard.push({ name: String(name).slice(0, 20), score, difficulty: difficulty || "normal", date });
+      const date = new Date().toISOString().split("T")[0]!;
+      leaderboard.push({ name: String(name).slice(0, 20), score, difficulty: difficulty!, date });
       leaderboard.sort((a, b) => b.score - a.score);
       leaderboard.splice(50);
     }
@@ -161,23 +169,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (action === "stats" && req.method === "POST") {
     const body = await req.json().catch(() => ({}));
-    const { correct, total, playerId } = body;
+    const correct = body.correct as number | undefined;
+    const total = body.total as number | undefined;
+    const playerId = body.playerId as string | undefined;
     globalStats.totalGames++;
     globalStats.totalCorrect += correct || 0;
     globalStats.totalPlayed += total || 0;
     if (correct && total) {
-      const date = new Date().toISOString().split("T")[0];
+      const date = new Date().toISOString().split("T")[0]!;
       if (!dailyStats[date]) dailyStats[date] = { games: 0, correct: 0, players: new Set() };
-      dailyStats[date].games++;
-      dailyStats[date].correct += correct;
-      if (playerId) dailyStats[date].players.add(playerId);
+      const stat = dailyStats[date]!;
+      stat.games++;
+      stat.correct += correct;
+      if (playerId) stat.players.add(playerId);
     }
     return res.status(200).json({ stats: globalStats, daily: dailyStats });
   }
 
   if (action === "stats" && req.method === "GET") {
-    const date = new Date().toISOString().split("T")[0];
-    const today = dailyStats[date] || { games: 0, correct: 0, players: 0 };
+    const date = new Date().toISOString().split("T")[0]!;
+    const today = dailyStats[date] ?? { games: 0, correct: 0, players: new Set<string>() };
     return res.status(200).json({
       stats: globalStats,
       today: { ...today, players: today.players?.size || 0 },
@@ -186,10 +197,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (action === "tournament-submit" && req.method === "POST") {
     const body = await req.json().catch(() => ({}));
-    const { name, score } = body;
+    const name = body.name as string | undefined;
+    const score = body.score as number | undefined;
     const week = getWeekSeed();
     if (name && typeof score === "number") {
-      tournamentLeaderboard.push({ name: String(name).slice(0, 20), score, week, date: new Date().toISOString().split("T")[0] });
+      const safeName = String(name).slice(0, 20);
+      tournamentLeaderboard.push({ name: safeName, score, week, date: new Date().toISOString().split("T")[0]! });
       tournamentLeaderboard.sort((a, b) => b.score - a.score);
       tournamentLeaderboard.splice(100);
     }
