@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI or Not? - Leaderboard</title>
+    <style>
+        :root {
+            --bg-primary: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --bg-secondary: rgba(255,255,255,0.05);
+            --text-primary: #fff;
+            --text-secondary: #a0a0a0;
+            --accent: #00d4ff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            color: var(--text-primary);
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+        header { text-align: center; margin-bottom: 2rem; }
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf, #ff006e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .back-btn {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 25px;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+        .back-btn:hover { background: rgba(255,255,255,0.2); }
+        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; justify-content: center; }
+        .tab {
+            padding: 0.6rem 1.5rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            color: #888;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        .tab:hover { border-color: #9b59b6; color: #9b59b6; }
+        .tab.active { background: linear-gradient(90deg, #9b59b6, #8e44ad); border-color: transparent; color: #fff; }
+        .week-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .week-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .week-btn:hover { background: rgba(255,255,255,0.2); }
+        .week-display { font-size: 1.1rem; color: #9b59b6; font-weight: bold; }
+        .leaderboard {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .leaderboard-header {
+            display: grid;
+            grid-template-columns: 50px 1fr 80px;
+            padding: 1rem;
+            background: rgba(255,255,255,0.05);
+            font-size: 0.75rem;
+            color: #888;
+            text-transform: uppercase;
+        }
+        .leaderboard-row {
+            display: grid;
+            grid-template-columns: 50px 1fr 80px;
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.3s;
+        }
+        .leaderboard-row:hover { background: rgba(255,255,255,0.05); }
+        .leaderboard-row:last-child { border-bottom: none; }
+        .rank { font-weight: bold; font-size: 1.1rem; }
+        .rank.gold { color: #ffd700; }
+        .rank.silver { color: #c0c0c0; }
+        .rank.bronze { color: #cd7f32; }
+        .name { font-weight: 500; }
+        .name .you { font-size: 0.7rem; color: #00d4ff; margin-left: 0.5rem; }
+        .score { font-weight: bold; color: #00d4ff; text-align: right; }
+        .empty { text-align: center; padding: 3rem; color: #666; }
+        .section-title { font-size: 1.2rem; margin: 2rem 0 1rem; color: #9b59b6; }
+        .highlight { background: rgba(155, 89, 182, 0.2); border-left: 3px solid #9b59b6; }
+        @media (max-width: 500px) {
+            .leaderboard-header, .leaderboard-row { grid-template-columns: 40px 1fr 60px; padding: 0.6rem; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="/" class="back-btn">← Back to Game</a>
+            <h1>Leaderboard</h1>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('regular')">Regular</button>
+            <button class="tab" onclick="showTab('tournament')">Tournament</button>
+        </div>
+
+        <div id="regularSection">
+            <div class="section-title">All-Time Top Scores</div>
+            <div class="leaderboard" id="regularLeaderboard">
+                <div class="leaderboard-header"><span>Rank</span><span>Player</span><span>Score</span></div>
+                <div class="empty">Loading...</div>
+            </div>
+        </div>
+
+        <div id="tournamentSection" style="display:none">
+            <div class="week-selector">
+                <button class="week-btn" onclick="changeWeek(-1)">←</button>
+                <span class="week-display" id="weekDisplay">Loading...</span>
+                <button class="week-btn" onclick="changeWeek(1)">→</button>
+            </div>
+            <div class="leaderboard" id="tournamentLeaderboard">
+                <div class="leaderboard-header"><span>Rank</span><span>Player</span><span>Score</span></div>
+                <div class="empty">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'regular';
+        let currentWeekOffset = 0;
+        let currentWeek = '';
+
+        async function loadRegularLeaderboard() {
+            try {
+                const res = await fetch('/api?action=leaderboard');
+                const data = await res.json();
+                const lb = document.getElementById('regularLeaderboard');
+                if (data.leaderboard && data.leaderboard.length > 0) {
+                    lb.innerHTML = '<div class="leaderboard-header"><span>Rank</span><span>Player</span><span>Score</span></div>' +
+                        data.leaderboard.map((e, i) => {
+                            const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+                            return `<div class="leaderboard-row ${rankClass}"><span class="rank ${rankClass}">#${i + 1}</span><span class="name">${escapeHtml(e.name)}</span><span class="score">${e.score}</span></div>`;
+                        }).join('');
+                } else {
+                    lb.innerHTML = '<div class="leaderboard-header"><span>Rank</span><span>Player</span><span>Score</span></div><div class="empty">No scores yet. Be the first!</div>';
+                }
+            } catch (e) {
+                document.getElementById('regularLeaderboard').innerHTML = '<div class="empty">Failed to load</div>';
+            }
+        }
+
+        async function loadTournamentLeaderboard() {
+            try {
+                const res = await fetch(`/api?action=tournament-leaderboard&week=${currentWeek}`);
+                const data = await res.json();
+                const lb = document.getElementById('tournamentLeaderboard');
+                document.getElementById('weekDisplay').textContent = data.week || currentWeek;
+                if (data.leaderboard && data.leaderboard.length > 0) {
+                    lb.innerHTML = '<div class="leaderboard-header"><span>Rank</span><span>Player</span><span>Score</span></div>' +
+                        data.leaderboard.map((e, i) => {
+                            const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+                            return `<div class="leaderboard-row ${rankClass}"><span class="rank ${rankClass}">#${i + 1}</span><span class="name">${escapeHtml(e.name)}</span><span class="score">${e.score}</span></div>`;
+                        }).join('');
+                } else {
+                    lb.innerHTML = '<div class="leaderboard-header"><span>Rank</span><span>Player</span><span>Score</span></div><div class="empty">No scores this week yet.</div>';
+                }
+            } catch (e) {
+                document.getElementById('tournamentLeaderboard').innerHTML = '<div class="empty">Failed to load</div>';
+            }
+        }
+
+        async function loadCurrentWeek() {
+            try {
+                const res = await fetch('/api?action=tournament-week');
+                const data = await res.json();
+                currentWeek = data.week;
+                loadTournamentLeaderboard();
+            } catch (e) {
+                currentWeek = '2026-W13';
+                loadTournamentLeaderboard();
+            }
+        }
+
+        function changeWeek(delta) {
+            currentWeekOffset += delta;
+            const [year, week] = currentWeek.split('-W').map(Number);
+            const newWeek = week + currentWeekOffset;
+            if (newWeek < 1 || newWeek > 52) return;
+            currentWeek = `${year}-W${String(newWeek).padStart(2, '0')}`;
+            document.getElementById('weekDisplay').textContent = currentWeek;
+            loadTournamentLeaderboard();
+        }
+
+        function showTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach((t, i) => {
+                t.classList.toggle('active', (tab === 'regular' && i === 0) || (tab === 'tournament' && i === 1));
+            });
+            document.getElementById('regularSection').style.display = tab === 'regular' ? 'block' : 'none';
+            document.getElementById('tournamentSection').style.display = tab === 'tournament' ? 'block' : 'none';
+            if (tab === 'regular') loadRegularLeaderboard();
+            else loadCurrentWeek();
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        loadRegularLeaderboard();
+    </script>
+</body>
+</html>

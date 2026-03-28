@@ -272,8 +272,12 @@
 <body>
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
     <div class="container">
-        <header>
+        <header style="display:flex;justify-content:space-between;align-items:center;">
             <h1>AI or Not?</h1>
+            <div style="display:flex;gap:0.5rem;">
+                <a href="/leaderboard.html" style="color:#888;font-size:0.8rem;text-decoration:none;padding:0.3rem 0.8rem;background:rgba(255,255,255,0.05);border-radius:15px;">🏆 Leaderboard</a>
+                <a href="/stats.html" style="color:#888;font-size:0.8rem;text-decoration:none;padding:0.3rem 0.8rem;background:rgba(255,255,255,0.05);border-radius:15px;">📊 Stats</a>
+            </div>
         </header>
 
         <div class="mode-selector">
