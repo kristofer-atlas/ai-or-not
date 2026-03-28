@@ -200,6 +200,16 @@
 
             <div id="personalSection" style="display:none">
                 <div class="stats-grid">
+                    <div class="stat-card" style="grid-column: 1/-1; display:flex; align-items:center; justify-content:center; gap:0.8rem; padding:1.5rem;">
+                        <span id="myTitleBadge" style="font-size:2.5rem;">🐣</span>
+                        <div>
+                            <div id="myTitleText" style="font-size:1.3rem;font-weight:bold;">Newcomer</div>
+                            <div style="font-size:0.75rem;color:#888;">Player Title</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
                     <div class="stat-card">
                         <h3>Level</h3>
                         <div class="value purple" id="myLevel">1</div>
@@ -280,12 +290,28 @@
 
         function loadPersonalStats() {
             const localStats = JSON.parse(localStorage.getItem('ai-or-not-stats') || '{"played":0,"bestScore":0,"bestStreak":0,"totalCorrect":0,"totalGuesses":0,"achievements":[],"dailyHistory":[],"streakHistory":[],"level":1,"xp":0,"dailyStreak":0}');
+            const titles = [
+                { minGames: 0, title: 'Newcomer', badge: '🐣' },
+                { minGames: 5, title: 'Learner', badge: '📚' },
+                { minGames: 15, title: 'Player', badge: '🎮' },
+                { minGames: 30, title: 'Skilled', badge: '⭐' },
+                { minGames: 50, title: 'Expert', badge: '🎯' },
+                { minGames: 75, title: 'Veteran', badge: '🏅' },
+                { minGames: 100, title: 'Master', badge: '🎖️' },
+                { minGames: 150, title: 'Champion', badge: '🏆' },
+                { minGames: 200, title: 'Legend', badge: '👑' },
+            ];
+            const played = localStats.played || 0;
+            let currentTitle = titles[0];
+            for (const t of titles) { if (played >= t.minGames) currentTitle = t; }
+            document.getElementById('myTitleBadge').textContent = currentTitle.badge;
+            document.getElementById('myTitleText').textContent = currentTitle.title;
             document.getElementById('myLevel').textContent = localStats.level || 1;
             document.getElementById('myXp').textContent = (localStats.xp || 0) + '/' + (localStats.level || 1) * 100;
             document.getElementById('myDailyStreak').textContent = localStats.dailyStreak || 0;
             document.getElementById('myBestScore').textContent = localStats.bestScore || 0;
             document.getElementById('myBestStreak').textContent = localStats.bestStreak || 0;
-            document.getElementById('myTotalPlayed').textContent = localStats.played || 0;
+            document.getElementById('myTotalPlayed').textContent = played;
 
             const historyEl = document.getElementById('dailyHistory');
             if (localStats.dailyHistory && localStats.dailyHistory.length > 0) {
