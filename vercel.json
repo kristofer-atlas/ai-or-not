@@ -1,5 +1,4 @@
 {
   "outputDirectory": "public",
-  "installCommand": "bun install",
-  "buildCommand": "bun build public/index.html --outdir=public --target=browser"
+  "installCommand": "bun install"
 }
