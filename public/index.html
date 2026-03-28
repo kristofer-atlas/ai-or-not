@@ -269,6 +269,14 @@
         .zoom-overlay .zoom-close:hover { background: rgba(255,255,255,0.2); }
         .instructions { text-align: center; color: #a0a0a0; font-size: 0.8rem; }
         .instructions strong { color: #00d4ff; }
+        .shortcuts-btn { background: none; border: none; color: #888; cursor: pointer; font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 4px; }
+        .shortcuts-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .shortcuts-panel { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .shortcuts-panel.active { display: flex; }
+        .shortcuts-panel h2 { color: var(--accent-primary); margin-bottom: 1.5rem; }
+        .shortcut-row { display: flex; align-items: center; gap: 1rem; margin: 0.5rem 0; font-size: 0.95rem; }
+        .shortcut-key { background: rgba(255,255,255,0.1); padding: 0.3rem 0.8rem; border-radius: 6px; min-width: 60px; text-align: center; }
+        .shortcuts-close { margin-top: 2rem; padding: 0.6rem 2rem; background: var(--accent-primary); border: none; border-radius: 25px; color: #000; cursor: pointer; font-weight: bold; }
         .loading { display: flex; align-items: center; justify-content: center; min-height: 250px; font-size: 0.9rem; color: #a0a0a0; grid-column: 1 / -1; }
         .spinner { width: 25px; height: 25px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #00d4ff; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 0.6rem; }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -429,7 +437,23 @@
             <div class="loading"><div class="spinner"></div>Loading...</div>
         </div>
 
-        <p class="instructions">Press <strong>1</strong> / <strong>2</strong> or click • Hover & click <strong>🔍</strong> to zoom</p>
+        <p class="instructions">
+            <button class="shortcuts-btn" onclick="toggleShortcuts()">⌨️ Shortcuts</button>
+            • Press <strong>1</strong> / <strong>2</strong> or click • Hover & click <strong>🔍</strong> to zoom
+        </p>
+    </div>
+
+    <div class="shortcuts-panel" id="shortcutsPanel">
+        <h2>⌨️ Keyboard Shortcuts</h2>
+        <div class="shortcut-row"><span class="shortcut-key">1</span> Select left image</div>
+        <div class="shortcut-row"><span class="shortcut-key">2</span> Select right image</div>
+        <div class="shortcut-row"><span class="shortcut-key">←</span> Select left image</div>
+        <div class="shortcut-row"><span class="shortcut-key">→</span> Select right image</div>
+        <div class="shortcut-row"><span class="shortcut-key">Enter</span> Submit guess</div>
+        <div class="shortcut-row"><span class="shortcut-key">Space</span> Submit guess</div>
+        <div class="shortcut-row"><span class="shortcut-key">H</span> Use hint</div>
+        <div class="shortcut-row"><span class="shortcut-key">Esc</span> Close zoom/modal</div>
+        <button class="shortcuts-close" onclick="toggleShortcuts()">Got it!</button>
     </div>
 
     <div class="feedback" id="feedback"></div>
@@ -788,6 +812,10 @@
             const isLight = document.body.classList.contains('light');
             document.getElementById('themeToggle').textContent = isLight ? '☀️' : '🌙';
             localStorage.setItem('ai-or-not-theme', isLight ? 'light' : 'dark');
+        }
+
+        function toggleShortcuts() {
+            document.getElementById('shortcutsPanel').classList.toggle('active');
         }
 
         function loadTheme() {
