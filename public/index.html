@@ -328,7 +328,7 @@
         .btn.share { background: linear-gradient(90deg, #25d366, #128c7e); }
         .name-input { padding: 0.7rem 1.2rem; font-size: 0.9rem; border: none; border-radius: 25px; background: rgba(255,255,255,0.1); color: white; text-align: center; width: 200px; margin-bottom: 0.5rem; }
         .name-input::placeholder { color: rgba(255,255,255,0.5); }
-        .feedback { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); padding: 0.6rem 1.5rem; border-radius: 12px; font-size: 1.3rem; font-weight: bold; z-index: 100; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: none; }
+        .feedback { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); padding: 0.6rem 1.5rem; border-radius: 12px; font-size: 1rem; font-weight: bold; z-index: 100; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: none; text-align: center; max-width: 90vw; }
         .feedback.show { transform: translate(-50%, -50%) scale(1); }
         .feedback.correct { background: linear-gradient(135deg, #00b894, #00cec9); }
         .feedback.wrong { background: linear-gradient(135deg, #ff4757, #d63031); }
@@ -780,6 +780,29 @@
             fb.className = 'feedback ' + (correct ? 'correct' : 'wrong') + ' show';
             setTimeout(() => fb.classList.remove('show'), 600);
         }
+
+        const AI_TIPS = [
+            "Look for distorted eyes or pupils",
+            "Check for extra or missing fingers",
+            "Notice unnatural hair strands or flow",
+            "Look for asymmetric features",
+            "Check for smudged text or logos",
+            "Notice odd skin tones or textures",
+            "Look for impossible reflections",
+            "Check for blurred edges or halos",
+        ];
+
+        function showLearnTip(wrongIndex, aiPosition) {
+            const wasRight = wrongIndex === aiPosition;
+            if (wasRight) return;
+            const tip = AI_TIPS[Math.floor(Math.random() * AI_TIPS.length)];
+            const fb = document.getElementById('feedback');
+            const label = wrongIndex === 0 ? 'LEFT' : 'RIGHT';
+            fb.textContent = `${label} was AI! 💡 ${tip}`;
+            fb.className = 'feedback wrong show';
+            setTimeout(() => fb.classList.remove('show'), 2500);
+        }
+
         function showStreakPopup(text) {
             const sp = document.getElementById('streakPopup');
             sp.textContent = text;
@@ -1091,6 +1114,7 @@
                 streak = 0;
                 if (mode !== 'timed' && mode !== 'tournament') lives--;
                 showFeedback(false);
+                showLearnTip(id, currentAiPosition);
                 playSound('wrong');
                 triggerHaptic('wrong');
             }
@@ -1104,7 +1128,7 @@
             } else if (lives <= 0) {
                 setTimeout(showNameScreen, 1000);
             } else {
-                setTimeout(loadNewRound, 1200);
+                setTimeout(loadNewRound, 2000);
             }
         }
 
