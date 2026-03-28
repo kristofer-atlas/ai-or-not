@@ -1,0 +1,16 @@
+{
+  "name": "ai-or-not",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "canvas": "^3.2.2",
+    "playwright": "^1.58.2"
+  }
+}

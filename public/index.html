@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI or Not?</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 1.5rem; }
+        header { text-align: center; margin-bottom: 1rem; }
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf, #ff006e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 0.4rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        .mode-btn {
+            padding: 0.4rem 1rem;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            background: transparent;
+            color: #a0a0a0;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        .mode-btn:hover { border-color: #00d4ff; color: #00d4ff; }
+        .mode-btn.active { background: linear-gradient(90deg, #00d4ff, #7b2cbf); border-color: transparent; color: white; }
+        .mode-btn.timed.active { background: linear-gradient(90deg, #e74c3c, #c0392b); }
+        .mode-btn.daily.active { background: linear-gradient(90deg, #f1c40f, #f39c12); color: #000; }
+        .mode-btn.tournament { border-color: #9b59b6; }
+        .mode-btn.tournament:hover { border-color: #8e44ad; color: #9b59b6; }
+        .mode-btn.tournament.active { background: linear-gradient(90deg, #9b59b6, #8e44ad); border-color: transparent; color: white; }
+        .tournament-info { text-align: center; font-size: 0.75rem; color: #9b59b6; margin-top: -0.5rem; margin-bottom: 0.5rem; }
+        .diff-badge { display: inline-block; font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 10px; margin-left: 0.5rem; vertical-align: middle; }
+        .diff-badge.easy { background: #00b894; color: #000; }
+        .diff-badge.normal { background: #3498db; color: #000; }
+        .diff-badge.hard { background: #e74c3c; color: #fff; }
+        .cat-badge { display: inline-block; font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 8px; margin-left: 0.5rem; vertical-align: middle; text-transform: capitalize; }
+        .cat-badge.landscape { background: #27ae60; color: #fff; }
+        .cat-badge.portrait { background: #e91e63; color: #fff; }
+        .cat-badge.animal { background: #ff9800; color: #000; }
+        .cat-badge.nature { background: #4caf50; color: #fff; }
+        .cat-badge.architecture { background: #795548; color: #fff; }
+        .cat-badge.fantasy { background: #9c27b0; color: #fff; }
+        .cat-badge.all { background: #607d8b; color: #fff; }
+        .category-selector {
+            display: flex;
+            justify-content: center;
+            gap: 0.3rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .category-label { font-size: 0.75rem; color: #a0a0a0; margin-right: 0.5rem; }
+        .category-btn {
+            padding: 0.3rem 0.8rem;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 15px;
+            background: rgba(255,255,255,0.05);
+            color: #888;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: all 0.3s ease;
+            text-transform: capitalize;
+        }
+        .category-btn:hover { border-color: #9b59b6; color: #9b59b6; }
+        .category-btn.active { background: linear-gradient(90deg, #9b59b6, #8e44ad); border-color: transparent; color: white; }
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .stats-row { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+        .stat { text-align: center; min-width: 50px; }
+        .stat-value { font-size: 1.3rem; font-weight: bold; color: #00d4ff; transition: all 0.3s; }
+        .stat-value.fire { animation: fire 0.5s ease infinite alternate; color: #ff6b35; }
+        .stat-value.gold { color: #ffd700; }
+        .stat-label { font-size: 0.55rem; color: #a0a0a0; text-transform: uppercase; }
+        .lives { display: flex; gap: 0.2rem; }
+        .heart { font-size: 1.2rem; transition: all 0.3s; }
+        .heart.lost { opacity: 0.2; transform: scale(0.8); }
+        .timer-container { position: relative; width: 50px; height: 50px; }
+        .timer-ring { transform: rotate(-90deg); }
+        .timer-ring circle { fill: none; stroke-width: 4; }
+        .timer-ring .bg { stroke: rgba(255,255,255,0.1); }
+        .timer-ring .progress { stroke: #00d4ff; stroke-linecap: round; transition: stroke-dashoffset 0.1s linear; }
+        .timer-ring .progress.warning { stroke: #ffa502; }
+        .timer-ring .progress.danger { stroke: #ff4757; }
+        .timer-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1rem; font-weight: bold; }
+        .timer-large { width: 80px; height: 80px; }
+        .timer-large .timer-ring circle { stroke-width: 5; }
+        .timer-large .timer-text { font-size: 1.5rem; }
+        .actions { display: flex; gap: 0.3rem; }
+        .action-btn { padding: 0.3rem 0.6rem; border: none; border-radius: 12px; background: rgba(255,255,255,0.1); color: #a0a0a0; cursor: pointer; font-size: 0.7rem; transition: all 0.3s; }
+        .action-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+        .action-btn.hint { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
+        .action-btn.hint:hover { background: rgba(255, 193, 7, 0.4); }
+        .action-btn.hint.used { opacity: 0.3; pointer-events: none; }
+        .action-btn.sound { font-size: 1rem; }
+        .powerups { display: flex; gap: 0.3rem; margin-left: 0.5rem; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 0.5rem; }
+        .powerup-btn { padding: 0.3rem 0.5rem; border: none; border-radius: 8px; background: rgba(255,255,255,0.08); color: #a0a0a0; cursor: pointer; font-size: 0.7rem; transition: all 0.3s; }
+        .powerup-btn:hover:not(:disabled) { background: rgba(255,255,255,0.15); color: #fff; }
+        .powerup-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .powerup-btn.fifty .icon { color: #f39c12; }
+        .powerup-btn.freeze .icon { color: #3498db; }
+        .powerup-btn.double .icon { color: #e74c3c; }
+        .powerup-btn.fifty.used, .powerup-btn.freeze.used, .powerup-btn.double.used { background: rgba(0,0,0,0.3); }
+        .powerup-active { animation: powerupPulse 0.5s ease; }
+        @keyframes powerupPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        .game-area { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 0.8rem; }
+        @media (max-width: 600px) { .game-area { grid-template-columns: 1fr; } }
+        .image-card {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            background: rgba(255,255,255,0.05);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0;
+            transform: scale(0.9);
+            border: 3px solid transparent;
+        }
+        .image-card.visible { opacity: 1; transform: scale(1); }
+        .image-card.disabled { pointer-events: none; }
+        .image-card.selected { border-color: #00d4ff; box-shadow: 0 0 20px rgba(0, 212, 255, 0.5); }
+        .image-card.correct { border-color: #00b894; box-shadow: 0 0 25px rgba(0, 184, 148, 0.6); }
+        .image-card.wrong { border-color: #d63031; box-shadow: 0 0 25px rgba(214, 48, 49, 0.6); }
+        .image-card.hinted { filter: blur(10px) brightness(0.6); }
+        .image-card.reveal { animation: revealPulse 0.3s ease; }
+        @keyframes revealPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+        .image-card img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+        .image-card .key-hint { position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.7); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+        .badge { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); padding: 0.6rem 1.2rem; border-radius: 8px; font-size: 1rem; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10; }
+        .badge.show { transform: translate(-50%, -50%) scale(1); }
+        .badge.ai { background: linear-gradient(135deg, #7b2cbf, #e91e63); }
+        .badge.real { background: linear-gradient(135deg, #00b894, #00cec9); }
+        .image-card .zoom-btn { position: absolute; bottom: 8px; right: 8px; background: rgba(155, 89, 182, 0.8); border: none; color: #fff; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; z-index: 5; }
+        .image-card:hover .zoom-btn { opacity: 1; }
+        .image-card .zoom-btn:hover { background: rgba(155, 89, 182, 1); transform: scale(1.1); }
+        .zoom-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; display: none; justify-content: center; align-items: center; flex-direction: column; }
+        .zoom-overlay.active { display: flex; }
+        .zoom-overlay img { max-width: 90vw; max-height: 80vh; object-fit: contain; border-radius: 8px; }
+        .zoom-overlay .zoom-label { position: absolute; bottom: 2rem; color: #888; font-size: 0.85rem; }
+        .zoom-overlay .zoom-close { position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; }
+        .zoom-overlay .zoom-close:hover { background: rgba(255,255,255,0.2); }
+        .instructions { text-align: center; color: #a0a0a0; font-size: 0.8rem; }
+        .instructions strong { color: #00d4ff; }
+        .loading { display: flex; align-items: center; justify-content: center; min-height: 250px; font-size: 0.9rem; color: #a0a0a0; grid-column: 1 / -1; }
+        .spinner { width: 25px; height: 25px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #00d4ff; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 0.6rem; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fire { from { text-shadow: 0 0 10px #ff6b35; } to { text-shadow: 0 0 20px #ff8800; } }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes achievementPop { 0% { transform: scale(0); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .overlay-screen {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.95);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            z-index: 200; opacity: 0; pointer-events: none;
+            transition: opacity 0.4s ease;
+            padding: 1rem;
+        }
+        .overlay-screen.show { opacity: 1; pointer-events: auto; }
+        .overlay-screen h2 { font-size: 1.8rem; margin-bottom: 0.8rem; }
+        .overlay-screen h2.game-over { background: linear-gradient(90deg, #ff4757, #ff6b81); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .overlay-screen h2.high-score { background: linear-gradient(90deg, #ffd700, #ff8c00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .overlay-screen h2.achievement { background: linear-gradient(90deg, #9b59b6, #8e44ad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .final-stats { display: flex; gap: 1.5rem; margin: 0.8rem 0; flex-wrap: wrap; justify-content: center; }
+        .final-stat { text-align: center; }
+        .final-stat-value { font-size: 1.8rem; font-weight: bold; color: #00d4ff; }
+        .final-stat-label { font-size: 0.7rem; color: #a0a0a0; }
+        .achievement-unlock { display: flex; align-items: center; gap: 1rem; margin: 1rem 0; padding: 1rem; background: rgba(155, 89, 182, 0.2); border-radius: 15px; animation: achievementPop 0.5s ease; }
+        .achievement-icon { font-size: 2.5rem; }
+        .achievement-text { text-align: left; }
+        .achievement-text h3 { color: #9b59b6; font-size: 1.1rem; }
+        .achievement-text p { color: #a0a0a0; font-size: 0.85rem; }
+        .btn { padding: 0.7rem 1.8rem; font-size: 0.9rem; border: none; border-radius: 25px; cursor: pointer; background: linear-gradient(90deg, #00d4ff, #7b2cbf); color: white; font-weight: bold; transition: all 0.3s; margin: 0.3rem; }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,212,255,0.4); }
+        .btn.secondary { background: rgba(255,255,255,0.1); }
+        .btn.secondary:hover { background: rgba(255,255,255,0.2); }
+        .btn.share { background: linear-gradient(90deg, #25d366, #128c7e); }
+        .name-input { padding: 0.7rem 1.2rem; font-size: 0.9rem; border: none; border-radius: 25px; background: rgba(255,255,255,0.1); color: white; text-align: center; width: 200px; margin-bottom: 0.5rem; }
+        .name-input::placeholder { color: rgba(255,255,255,0.5); }
+        .feedback { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); padding: 0.6rem 1.5rem; border-radius: 12px; font-size: 1.3rem; font-weight: bold; z-index: 100; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: none; }
+        .feedback.show { transform: translate(-50%, -50%) scale(1); }
+        .feedback.correct { background: linear-gradient(135deg, #00b894, #00cec9); }
+        .feedback.wrong { background: linear-gradient(135deg, #ff4757, #d63031); }
+        .streak-popup { position: fixed; top: 15%; left: 50%; transform: translateX(-50%) scale(0); font-size: 1.1rem; font-weight: bold; color: #ffd700; z-index: 90; transition: transform 0.3s; text-shadow: 0 0 20px rgba(255, 215, 0, 0.8); white-space: nowrap; }
+        .streak-popup.show { transform: translateX(-50%) scale(1); }
+        .achievement-toast { position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #9b59b6, #8e44ad); padding: 0.8rem 1.2rem; border-radius: 10px; display: flex; align-items: center; gap: 0.8rem; z-index: 300; opacity: 0; transform: translateX(100%); transition: all 0.4s ease; }
+        .achievement-toast.show { opacity: 1; transform: translateX(0); }
+        .achievement-toast .icon { font-size: 1.5rem; }
+        .achievement-toast .text h4 { font-size: 0.85rem; color: #fff; }
+        .achievement-toast .text p { font-size: 0.7rem; color: rgba(255,255,255,0.7); }
+        .combo-meter { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; font-weight: bold; color: #ffd700; text-shadow: 0 0 30px rgba(255, 215, 0, 0.8); opacity: 0; pointer-events: none; }
+        .combo-meter.show { animation: comboFlash 0.5s ease forwards; }
+        @keyframes comboFlash { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI or Not?</h1>
+        </header>
+
+        <div class="mode-selector">
+            <button class="mode-btn active" onclick="setMode('practice')">Practice</button>
+            <button class="mode-btn daily" onclick="setMode('daily')">Daily</button>
+            <button class="mode-btn timed" onclick="setMode('timed')">Timed (60s)</button>
+            <button class="mode-btn tournament" onclick="setMode('tournament')">Tournament</button>
+        </div>
+        <div class="tournament-info" id="tournamentInfo" style="display:none">Week <span id="tournamentWeek"></span> • 10 Rounds • Compete for the high score!</div>
+
+        <div class="category-selector">
+            <span class="category-label">Category:</span>
+            <button class="category-btn active" data-category="all" onclick="setCategory('all')">All</button>
+            <button class="category-btn" data-category="landscape" onclick="setCategory('landscape')">Landscape</button>
+            <button class="category-btn" data-category="portrait" onclick="setCategory('portrait')">Portrait</button>
+            <button class="category-btn" data-category="animal" onclick="setCategory('animal')">Animal</button>
+            <button class="category-btn" data-category="nature" onclick="setCategory('nature')">Nature</button>
+            <button class="category-btn" data-category="architecture" onclick="setCategory('architecture')">Architecture</button>
+            <button class="category-btn" data-category="fantasy" onclick="setCategory('fantasy')">Fantasy</button>
+        </div>
+
+        <div class="game-header">
+            <div class="stats-row">
+                <div class="stat">
+                    <div class="stat-value" id="score">0</div>
+                    <div class="stat-label">Score</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="streak">0</div>
+                    <div class="stat-label">Streak</div>
+                </div>
+                <div class="stat" id="roundStat">
+                    <div class="stat-value" id="round">0</div>
+                    <div class="stat-label">Round</div>
+                </div>
+                <div class="stat">
+                    <span class="cat-badge all" id="categoryBadge">All</span>
+                    <div class="stat-label" style="margin-top:0.3rem">Category</div>
+                </div>
+            </div>
+
+            <div class="lives" id="livesContainer">
+                <span class="heart">❤️</span>
+                <span class="heart">❤️</span>
+                <span class="heart">❤️</span>
+            </div>
+
+            <div class="timer-container" id="timerContainer" style="display: none;">
+                <svg class="timer-ring" width="50" height="50">
+                    <circle class="bg" cx="25" cy="25" r="21"></circle>
+                    <circle class="progress" id="timerProgress" cx="25" cy="25" r="21" stroke-dasharray="132" stroke-dashoffset="0"></circle>
+                </svg>
+                <span class="timer-text" id="timerText">10</span>
+            </div>
+
+            <div class="timer-container timer-large" id="gameTimerContainer" style="display: none;">
+                <svg class="timer-ring" width="80" height="80">
+                    <circle class="bg" cx="40" cy="40" r="36"></circle>
+                    <circle class="progress" id="gameTimerProgress" cx="40" cy="40" r="36" stroke-dasharray="226" stroke-dashoffset="0"></circle>
+                </svg>
+                <span class="timer-text" id="gameTimerText">60</span>
+            </div>
+
+            <div class="actions">
+                <button class="action-btn hint" id="hintBtn" onclick="useHint()">💡</button>
+                <div class="powerups">
+                    <button class="powerup-btn fifty" id="fiftyBtn" onclick="usePowerup('fifty')" title="Eliminate one wrong option"><span class="icon">½</span></button>
+                    <button class="powerup-btn freeze" id="freezeBtn" onclick="usePowerup('freeze')" title="Freeze timer for 5s"><span class="icon">❄️</span></button>
+                    <button class="powerup-btn double" id="doubleBtn" onclick="usePowerup('double')" title="2x points next answer"><span class="icon">×2</span></button>
+                </div>
+                <button class="action-btn sound" id="soundBtn" onclick="toggleSound()">🔊</button>
+            </div>
+        </div>
+
+        <div class="game-area" id="gameArea">
+            <div class="loading"><div class="spinner"></div>Loading...</div>
+        </div>
+
+        <p class="instructions">Press <strong>1</strong> / <strong>2</strong> or click • Hover & click <strong>🔍</strong> to zoom</p>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+    <div class="streak-popup" id="streakPopup"></div>
+    <div class="achievement-toast" id="achievementToast">
+        <span class="icon">🏆</span>
+        <div class="text"><h4>Achievement!</h4><p id="achievementToastText"></p></div>
+    </div>
+    <div class="combo-meter" id="comboMeter"></div>
+
+    <div class="zoom-overlay" id="zoomOverlay" onclick="closeZoom(event)">
+        <button class="zoom-close" onclick="closeZoom(event)">✕ Close</button>
+        <img id="zoomImage" src="" alt="Zoomed view">
+        <p class="zoom-label">Click anywhere to close or press Esc</p>
+    </div>
+
+    <div class="overlay-screen" id="nameScreen">
+        <h2 class="high-score">New High Score!</h2>
+        <input type="text" class="name-input" id="playerName" placeholder="Your name" maxlength="20">
+        <button class="btn" onclick="submitScore()">Submit</button>
+    </div>
+
+    <div class="overlay-screen" id="gameOverScreen">
+        <h2 class="game-over">Game Over!</h2>
+        <div class="final-stats">
+            <div class="final-stat"><div class="final-stat-value" id="finalScore">0</div><div class="final-stat-label">Score</div></div>
+            <div class="final-stat"><div class="final-stat-value" id="finalAccuracy">0%</div><div class="final-stat-label">Accuracy</div></div>
+            <div class="final-stat"><div class="final-stat-value" id="finalStreak">0</div><div class="final-stat-label">Best Streak</div></div>
+        </div>
+        <div id="achievementsDisplay"></div>
+        <button class="btn share" onclick="shareResult()">📤 Share</button>
+        <button class="btn" onclick="restartGame()">Play Again</button>
+    </div>
+
+    <script>
+        const TIMER_CIRC = 132;
+        const GAME_TIMER_CIRC = 226;
+        let mode = 'practice';
+        let currentCategory = 'all';
+        let sessionId = null;
+        let currentAiPosition = null;
+        let lives = 3;
+        let score = 0;
+        let streak = 0;
+        let bestStreak = 0;
+        let totalGuesses = 0;
+        let correctGuesses = 0;
+        let round = 0;
+        let timerInterval = null;
+        let gameTimerInterval = null;
+        let timeLeft = 10;
+        let gameTimeLeft = 60;
+        let selectedCard = 0;
+        let hintUsed = false;
+        let fiftyUsed = false;
+        let freezeUsed = false;
+        let doubleUsed = false;
+        let timerFrozen = false;
+        let dailySeed = null;
+        let tournamentSeed = null;
+        let tournamentRound = 0;
+        const TOURNAMENT_ROUNDS = 10;
+        let soundEnabled = true;
+        let achievements = JSON.parse(localStorage.getItem('ai-or-not-achievements') || '{}');
+        let stats = JSON.parse(localStorage.getItem('ai-or-not-stats') || '{"played":0,"bestScore":0,"bestStreak":0,"totalCorrect":0,"totalGuesses":0,"achievements":[]}');
+
+        const ALL_ACHIEVEMENTS = [
+            { id: 'first_game', name: 'First Steps', desc: 'Complete your first game', icon: '🎮' },
+            { id: 'perfect_round', name: 'Perfect Start', desc: 'Get 5 correct in a row', icon: '⭐' },
+            { id: 'streak_10', name: 'On Fire', desc: 'Get a 10 streak', icon: '🔥' },
+            { id: 'score_100', name: 'Century', desc: 'Score 100 points', icon: '💯' },
+            { id: 'speed_demon', name: 'Speed Demon', desc: 'Answer in under 2 seconds', icon: '⚡' },
+            { id: 'no_mistakes', name: 'Flawless', desc: 'Complete a game with no wrong answers', icon: '💎' },
+            { id: 'daily_player', name: 'Daily Player', desc: 'Play the daily challenge', icon: '📅' },
+            { id: 'time_trialist', name: 'Time Trialist', desc: 'Complete 10 rounds in timed mode', icon: '⏱️' },
+            { id: 'tournament_champion', name: 'Tournament Champion', desc: 'Win a weekly tournament', icon: '🏆' },
+            { id: 'tournament_perfect', name: 'Tournament Perfect', desc: 'Get 100% in a tournament', icon: '💯' },
+        ];
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                if (type === 'correct') {
+                    osc.frequency.setValueAtTime(523, ctx.currentTime);
+                    osc.frequency.setValueAtTime(659, ctx.currentTime + 0.08);
+                    osc.frequency.setValueAtTime(784, ctx.currentTime + 0.16);
+                } else if (type === 'powerup') {
+                    osc.frequency.setValueAtTime(400, ctx.currentTime);
+                    osc.frequency.setValueAtTime(600, ctx.currentTime + 0.1);
+                    osc.frequency.setValueAtTime(800, ctx.currentTime + 0.2);
+                } else {
+                    osc.frequency.setValueAtTime(200, ctx.currentTime);
+                    osc.frequency.setValueAtTime(150, ctx.currentTime + 0.1);
+                }
+                gain.gain.setValueAtTime(0.12, ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.25);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.25);
+            } catch(e) {}
+        }
+
+        async function fetchNewRound() {
+            let url = `/api?action=new-round&difficulty=normal`;
+            if (mode === 'daily' && dailySeed) url += `&seed=${dailySeed}`;
+            else if (mode === 'tournament') {
+                const week = await fetchTournamentWeek();
+                const seed = `${week}-r${tournamentRound}`;
+                url += `&seed=${seed}`;
+            }
+            if (currentCategory && currentCategory !== 'all') url += `&category=${currentCategory}`;
+            const res = await fetch(url);
+            return res.json();
+        }
+        async function submitGuessToApi(guessId) {
+            const res = await fetch(`/api?action=guess&sessionId=${sessionId}&guessId=${guessId}`, { method: 'POST' });
+            return res.json();
+        }
+        async function submitScoreToApi(name, sc) {
+            await fetch('/api?action=leaderboard', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, score: sc, difficulty: mode }) });
+        }
+
+        function updateDisplay() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('streak').textContent = streak;
+            document.getElementById('round').textContent = round;
+            document.getElementById('streak').classList.toggle('fire', streak >= 5);
+            document.querySelectorAll('.heart').forEach((h, i) => h.classList.toggle('lost', i >= lives));
+        }
+
+        function startTimer() {
+            const tc = document.getElementById('timerContainer');
+            const tp = document.getElementById('timerProgress');
+            const tt = document.getElementById('timerText');
+            tc.style.display = 'block';
+            timeLeft = mode === 'easy' ? 15 : mode === 'hard' ? 6 : 10;
+            tp.classList.remove('warning', 'danger');
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timerFrozen) return;
+                timeLeft -= 0.1;
+                const progress = (timeLeft / (mode === 'easy' ? 15 : mode === 'hard' ? 6 : 10)) * TIMER_CIRC;
+                tp.style.strokeDashoffset = TIMER_CIRC - progress;
+                tt.textContent = Math.ceil(timeLeft);
+                tp.classList.toggle('danger', timeLeft <= 2);
+                tp.classList.toggle('warning', timeLeft <= 4 && timeLeft > 2);
+                if (timeLeft <= 0) { clearInterval(timerInterval); handleTimeout(); }
+            }, 100);
+        }
+        function startGameTimer() {
+            const tc = document.getElementById('gameTimerContainer');
+            const tp = document.getElementById('gameTimerProgress');
+            const tt = document.getElementById('gameTimerText');
+            tc.style.display = 'block';
+            gameTimeLeft = 60;
+            tp.classList.remove('warning', 'danger');
+            clearInterval(gameTimerInterval);
+            gameTimerInterval = setInterval(() => {
+                gameTimeLeft -= 0.1;
+                const progress = (gameTimeLeft / 60) * GAME_TIMER_CIRC;
+                tp.style.strokeDashoffset = GAME_TIMER_CIRC - progress;
+                tt.textContent = Math.ceil(gameTimeLeft);
+                tp.classList.toggle('danger', gameTimeLeft <= 10);
+                tp.classList.toggle('warning', gameTimeLeft <= 20 && gameTimeLeft > 10);
+                if (gameTimeLeft <= 0) { clearInterval(gameTimerInterval); endTimedMode(); }
+            }, 100);
+        }
+        function stopTimers() {
+            clearInterval(timerInterval);
+            clearInterval(gameTimerInterval);
+            document.getElementById('timerContainer').style.display = 'none';
+            document.getElementById('gameTimerContainer').style.display = 'none';
+        }
+
+        function handleTimeout() {
+            document.querySelectorAll('.image-card').forEach(c => c.classList.add('disabled'));
+            revealAnswer(currentAiPosition);
+            playSound('wrong');
+            lives--; streak = 0;
+            updateDisplay();
+            if (lives <= 0 || mode === 'timed') setTimeout(showGameOver, 1000);
+            else setTimeout(loadNewRound, 1500);
+        }
+
+        function endTimedMode() {
+            document.querySelectorAll('.image-card').forEach(c => c.classList.add('disabled'));
+            showGameOver();
+        }
+
+        function showFeedback(correct) {
+            const fb = document.getElementById('feedback');
+            fb.textContent = correct ? '+' + getPoints() : 'Wrong!';
+            fb.className = 'feedback ' + (correct ? 'correct' : 'wrong') + ' show';
+            setTimeout(() => fb.classList.remove('show'), 600);
+        }
+        function showStreakPopup(text) {
+            const sp = document.getElementById('streakPopup');
+            sp.textContent = text;
+            sp.classList.add('show');
+            setTimeout(() => sp.classList.remove('show'), 800);
+        }
+        function showCombo(text) {
+            const cm = document.getElementById('comboMeter');
+            cm.textContent = text;
+            cm.classList.remove('show');
+            void cm.offsetWidth;
+            cm.classList.add('show');
+        }
+
+        function revealAnswer(correctPosition) {
+            document.querySelectorAll('.image-card').forEach((card, i) => {
+                card.classList.add('disabled', 'reveal');
+                card.classList.remove('hinted');
+                const badge = card.querySelector('.badge');
+                badge.classList.add('show');
+                card.classList.add(i === correctPosition ? 'correct' : 'wrong');
+                badge.classList.add(i === correctPosition ? 'ai' : 'real');
+                badge.textContent = i === correctPosition ? 'AI' : 'Real';
+            });
+        }
+
+        function getPoints() {
+            let points = 10 + streak * 2 - (hintUsed ? 5 : 0);
+            if (doubleUsed) { points *= 2; doubleUsed = false; document.getElementById('doubleBtn').classList.remove('used'); }
+            return points;
+        }
+
+        function checkAchievement(id) {
+            if (!achievements[id]) {
+                achievements[id] = true;
+                localStorage.setItem('ai-or-not-achievements', JSON.stringify(achievements));
+                const ach = ALL_ACHIEVEMENTS.find(a => a.id === id);
+                if (ach) showAchievementToast(ach);
+            }
+        }
+
+        function showAchievementToast(ach) {
+            const toast = document.getElementById('achievementToast');
+            document.getElementById('achievementToastText').textContent = ach.name + ' - ' + ach.desc;
+            toast.querySelector('.icon').textContent = ach.icon;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function setMode(m) {
+            mode = m;
+            document.querySelectorAll('.mode-btn').forEach(b => {
+                const isActive = m === 'tournament' ? b.textContent.toLowerCase().includes('tournament') :
+                    b.textContent.toLowerCase().includes(m === 'practice' ? 'practice' : m === 'daily' ? 'daily' : 'timed');
+                b.classList.toggle('active', isActive);
+            });
+            const tournamentInfo = document.getElementById('tournamentInfo');
+            if (m === 'daily') {
+                dailySeed = new Date().toISOString().split('T')[0];
+                tournamentInfo.style.display = 'none';
+                checkAchievement('daily_player');
+            } else if (m === 'tournament') {
+                dailySeed = null;
+                fetchTournamentWeek().then(week => {
+                    document.getElementById('tournamentWeek').textContent = week;
+                    tournamentInfo.style.display = 'block';
+                });
+            } else {
+                dailySeed = null;
+                tournamentInfo.style.display = 'none';
+            }
+            restartGame();
+        }
+
+        async function fetchTournamentWeek() {
+            const res = await fetch('/api?action=tournament-week');
+            const data = await res.json();
+            return data.week;
+        }
+
+        function setCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.category-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.category === cat);
+            });
+            restartGame();
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundBtn').textContent = soundEnabled ? '🔊' : '🔇';
+        }
+
+        function useHint() {
+            if (hintUsed || mode === 'timed') return;
+            hintUsed = true;
+            document.getElementById('hintBtn').classList.add('used');
+            const cards = document.querySelectorAll('.image-card');
+            if (cards.length > 0 && currentAiPosition !== null) {
+                const wrongIndex = currentAiPosition === 0 ? 1 : 0;
+                if (cards[wrongIndex]) cards[wrongIndex].classList.add('hinted');
+            }
+        }
+
+        function usePowerup(type) {
+            const cards = document.querySelectorAll('.image-card');
+            if (cards.length === 0 || currentAiPosition === null) return;
+            if (type === 'fifty' && !fiftyUsed) {
+                fiftyUsed = true;
+                document.getElementById('fiftyBtn').classList.add('used');
+                document.getElementById('fiftyBtn').disabled = true;
+                const wrongIndex = currentAiPosition === 0 ? 1 : 0;
+                if (cards[wrongIndex]) {
+                    cards[wrongIndex].classList.add('fifty-eliminated');
+                    cards[wrongIndex].style.opacity = '0.3';
+                }
+                playSound('powerup');
+            } else if (type === 'freeze' && !freezeUsed && mode !== 'timed') {
+                freezeUsed = true;
+                document.getElementById('freezeBtn').classList.add('used');
+                document.getElementById('freezeBtn').disabled = true;
+                timerFrozen = true;
+                showFeedback('❄️ Timer frozen!');
+                playSound('powerup');
+                setTimeout(() => { timerFrozen = false; }, 5000);
+            } else if (type === 'double' && !doubleUsed) {
+                doubleUsed = true;
+                document.getElementById('doubleBtn').classList.add('used');
+                document.getElementById('doubleBtn').disabled = true;
+                const btn = document.getElementById('doubleBtn');
+                btn.classList.add('powerup-active');
+                setTimeout(() => btn.classList.remove('powerup-active'), 500);
+                showFeedback('×2 active!');
+                playSound('powerup');
+            }
+        }
+
+        async function loadNewRound() {
+            stopTimers();
+            hintUsed = false;
+            fiftyUsed = false;
+            freezeUsed = false;
+            doubleUsed = false;
+            timerFrozen = false;
+            document.getElementById('hintBtn').classList.remove('used');
+            document.getElementById('fiftyBtn').classList.remove('used');
+            document.getElementById('freezeBtn').classList.remove('used');
+            document.getElementById('doubleBtn').classList.remove('used');
+            document.getElementById('fiftyBtn').disabled = false;
+            document.getElementById('freezeBtn').disabled = false;
+            document.getElementById('doubleBtn').disabled = false;
+            const gameArea = document.getElementById('gameArea');
+            gameArea.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+            const data = await fetchNewRound();
+            sessionId = data.sessionId;
+            currentAiPosition = data.aiPosition;
+            selectedCard = 0;
+            round++;
+            if (mode === 'tournament') tournamentRound++;
+            if (data.category) {
+                const badge = document.getElementById('categoryBadge');
+                badge.textContent = data.category;
+                badge.className = 'cat-badge ' + data.category;
+            }
+            gameArea.innerHTML = `
+                <div class="image-card selected" onclick="guess(0)">
+                    <span class="key-hint">1</span>
+                    <img src="${data.images[0].url}" alt="1">
+                    <div class="badge"></div>
+                    <button class="zoom-btn" onclick="openZoom(event)" data-url="${data.images[0].url}">🔍</button>
+                </div>
+                <div class="image-card" onclick="guess(1)">
+                    <span class="key-hint">2</span>
+                    <img src="${data.images[1].url}" alt="2">
+                    <div class="badge"></div>
+                    <button class="zoom-btn" onclick="openZoom(event)" data-url="${data.images[1].url}">🔍</button>
+                </div>`;
+            setTimeout(() => document.querySelectorAll('.image-card').forEach((card, i) => setTimeout(() => card.classList.add('visible'), i * 60)), 30);
+            if (mode === 'timed') startGameTimer();
+            else startTimer();
+        }
+
+        let lastGuessTime = 0;
+        async function guess(id) {
+            lastGuessTime = Date.now();
+            stopTimers();
+            document.querySelectorAll('.image-card').forEach(c => { c.classList.remove('visible', 'selected', 'hinted'); });
+            const result = await submitGuessToApi(id);
+            totalGuesses++;
+            revealAnswer(result.aiPosition);
+            if (id === result.aiPosition) {
+                correctGuesses++;
+                const prevStreak = streak;
+                streak++;
+                if (streak > bestStreak) bestStreak = streak;
+                score += getPoints();
+                showFeedback(true);
+                playSound('correct');
+                if (streak === 5) { showStreakPopup('🔥 5 Streak!'); checkAchievement('perfect_round'); }
+                if (streak === 10) { showStreakPopup('🔥🔥 10 Streak!'); checkAchievement('streak_10'); }
+                if (streak >= 5 && streak % 5 === 0) showCombo('x' + Math.min(1 + Math.floor(streak / 5), 5));
+                if (score >= 100) checkAchievement('score_100');
+                if (mode === 'timed' && round >= 10) checkAchievement('time_trialist');
+            } else {
+                streak = 0;
+                if (mode !== 'timed' && mode !== 'tournament') lives--;
+                showFeedback(false);
+                playSound('wrong');
+            }
+            updateDisplay();
+            if (mode === 'tournament' && tournamentRound >= TOURNAMENT_ROUNDS) {
+                setTimeout(showTournamentSubmit, 1000);
+            } else if (mode === 'timed' && lives <= 0) {
+                setTimeout(showGameOver, 1000);
+            } else if (lives <= 0) {
+                setTimeout(showNameScreen, 1000);
+            } else {
+                setTimeout(loadNewRound, 1200);
+            }
+        }
+
+        function showNameScreen() {
+            if (score > 0 && score > stats.bestScore) {
+                document.getElementById('nameScreen').classList.add('show');
+                document.getElementById('playerName').focus();
+            } else showGameOver();
+        }
+
+        async function showTournamentSubmit() {
+            const name = prompt('Tournament Complete! Enter your name for the leaderboard:') || 'Anonymous';
+            const res = await fetch('/api?action=tournament-submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, score })
+            });
+            const data = await res.json();
+            alert(`Tournament Complete!\n\nScore: ${score}\nRank: #${data.rank} of ${data.total}\nWeek: ${data.week}`);
+            showGameOver();
+        }
+
+        async function submitScore() {
+            await submitScoreToApi(document.getElementById('playerName').value.trim() || 'Anonymous', score);
+            document.getElementById('nameScreen').classList.remove('show');
+            showGameOver();
+        }
+
+        function showGameOver() {
+            stopTimers();
+            updateStats();
+            checkAchievement('first_game');
+            if (mode === 'timed' && correctGuesses === totalGuesses && totalGuesses > 0) checkAchievement('no_mistakes');
+            if (mode === 'tournament' && correctGuesses === totalGuesses && totalGuesses > 0) {
+                checkAchievement('tournament_perfect');
+                checkAchievement('tournament_champion');
+            }
+            const earnedAchievements = ALL_ACHIEVEMENTS.filter(a => achievements[a.id] && !stats.achievements.includes(a.id));
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('finalAccuracy').textContent = totalGuesses > 0 ? Math.round((correctGuesses / totalGuesses) * 100) + '%' : '0%';
+            document.getElementById('finalStreak').textContent = bestStreak;
+            document.getElementById('achievementsDisplay').innerHTML = earnedAchievements.length > 0 
+                ? earnedAchievements.map(a => `<div class="achievement-unlock"><span class="achievement-icon">${a.icon}</span><div class="achievement-text"><h3>${a.name}</h3><p>${a.desc}</p></div></div>`).join('')
+                : '';
+            document.getElementById('gameOverScreen').classList.add('show');
+        }
+
+        function updateStats() {
+            stats.played++;
+            stats.totalCorrect += correctGuesses;
+            stats.totalGuesses += totalGuesses;
+            if (score > stats.bestScore) stats.bestScore = score;
+            if (bestStreak > stats.bestStreak) stats.bestStreak = bestStreak;
+            ALL_ACHIEVEMENTS.filter(a => achievements[a.id]).forEach(a => { if (!stats.achievements.includes(a.id)) stats.achievements.push(a.id); });
+            localStorage.setItem('ai-or-not-stats', JSON.stringify(stats));
+        }
+
+        function shareResult() {
+            const text = `AI or Not? - ${mode === 'daily' ? 'Daily' : mode === 'timed' ? 'Timed' : 'Practice'} - Score: ${score} | Accuracy: ${totalGuesses > 0 ? Math.round((correctGuesses / totalGuesses) * 100) : 0}% | Streak: ${bestStreak}`;
+            if (navigator.share) navigator.share({ text });
+            else { navigator.clipboard.writeText(text); alert('Copied!'); }
+        }
+
+        function restartGame() {
+            stopTimers();
+            document.querySelectorAll('.overlay-screen').forEach(s => s.classList.remove('show'));
+            lives = mode === 'timed' || mode === 'tournament' ? 999 : 3;
+            score = 0; streak = 0; bestStreak = 0; totalGuesses = 0; correctGuesses = 0; round = 0;
+            tournamentRound = 0;
+            hintUsed = false;
+            document.getElementById('hintBtn').classList.remove('used');
+            updateDisplay();
+            loadNewRound();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (document.querySelector('.name-screen.show')) { if (e.key === 'Enter') submitScore(); return; }
+            if (document.querySelector('.overlay-screen.show')) return;
+            const cards = document.querySelectorAll('.image-card');
+            if (e.key === 'ArrowLeft' || e.key === '1') { selectedCard = 0; cards.forEach((c, i) => c.classList.toggle('selected', i === 0)); }
+            else if (e.key === 'ArrowRight' || e.key === '2') { selectedCard = 1; cards.forEach((c, i) => c.classList.toggle('selected', i === 1)); }
+            else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); guess(selectedCard); }
+            else if (e.key === 'h' || e.key === 'H') useHint();
+        });
+
+        updateDisplay();
+        loadNewRound();
+
+        function openZoom(e) {
+            e.stopPropagation();
+            const url = e.currentTarget.dataset.url;
+            document.getElementById('zoomImage').src = url;
+            document.getElementById('zoomOverlay').classList.add('active');
+        }
+        function closeZoom(e) {
+            if (e) e.stopPropagation();
+            document.getElementById('zoomOverlay').classList.remove('active');
+        }
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeZoom();
+        });
+    </script>
+</body>
+</html>

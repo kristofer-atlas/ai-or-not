@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI or Not? - Stats</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+        header { text-align: center; margin-bottom: 2rem; }
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf, #ff006e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .back-btn {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 25px;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+        .back-btn:hover { background: rgba(255,255,255,0.2); }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .stat-card h3 { font-size: 0.8rem; color: #a0a0a0; text-transform: uppercase; margin-bottom: 0.5rem; }
+        .stat-card .value { font-size: 2.5rem; font-weight: bold; color: #00d4ff; }
+        .stat-card .value.gold { color: #ffd700; }
+        .stat-card .value.green { color: #00b894; }
+        .stat-card .value.purple { color: #9b59b6; }
+        .section { margin-bottom: 2rem; }
+        .section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #fff;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.5rem;
+        }
+        .leaderboard-list { list-style: none; }
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+        }
+        .leaderboard-item .rank {
+            width: 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        .leaderboard-item .rank.silver { color: #c0c0c0; }
+        .leaderboard-item .rank.bronze { color: #cd7f32; }
+        .leaderboard-item .info { flex: 1; }
+        .leaderboard-item .name { font-weight: bold; }
+        .leaderboard-item .mode { font-size: 0.75rem; color: #a0a0a0; }
+        .leaderboard-item .score { font-size: 1.2rem; font-weight: bold; color: #00d4ff; }
+        .today-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .today-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .today-card .num { font-size: 1.8rem; font-weight: bold; color: #00d4ff; }
+        .today-card .label { font-size: 0.7rem; color: #a0a0a0; text-transform: uppercase; }
+        .loading { text-align: center; padding: 2rem; color: #a0a0a0; }
+        .spinner {
+            width: 30px; height: 30px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="/" class="back-btn">← Play</a>
+            <h1>Global Statistics</h1>
+        </header>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            Loading stats...
+        </div>
+
+        <div id="content" style="display: none;">
+            <div class="today-stats">
+                <div class="today-card">
+                    <div class="num" id="todayGames">0</div>
+                    <div class="label">Games Today</div>
+                </div>
+                <div class="today-card">
+                    <div class="num" id="todayPlayers">0</div>
+                    <div class="label">Players Today</div>
+                </div>
+                <div class="today-card">
+                    <div class="num" id="todayAccuracy">0%</div>
+                    <div class="label">Accuracy Today</div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Games</h3>
+                    <div class="value" id="totalGames">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Best Score</h3>
+                    <div class="value gold" id="bestScore">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Avg Accuracy</h3>
+                    <div class="value green" id="avgAccuracy">0%</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🏆 Top Scores</h2>
+                <ul class="leaderboard-list" id="leaderboard"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadStats() {
+            try {
+                const [statsRes, lbRes] = await Promise.all([
+                    fetch('/api?action=stats'),
+                    fetch('/api?action=leaderboard')
+                ]);
+                
+                const { stats, today } = await statsRes.json();
+                const { leaderboard } = await lbRes.json();
+
+                document.getElementById('totalGames').textContent = stats.totalGames || 0;
+                document.getElementById('bestScore').textContent = stats.bestScore || 0;
+                
+                const avgAcc = stats.totalGames > 0 
+                    ? Math.round((stats.totalCorrect / stats.totalPlayed) * 100) 
+                    : 0;
+                document.getElementById('avgAccuracy').textContent = avgAcc + '%';
+
+                document.getElementById('todayGames').textContent = today.games || 0;
+                document.getElementById('todayPlayers').textContent = today.players || 0;
+                document.getElementById('todayAccuracy').textContent = today.games > 0 
+                    ? Math.round((today.correct / today.games) * 100) + '%' 
+                    : '0%';
+
+                const lb = document.getElementById('leaderboard');
+                if (leaderboard.length === 0) {
+                    lb.innerHTML = '<li class="leaderboard-item"><div class="info">No scores yet - be the first!</div></li>';
+                } else {
+                    lb.innerHTML = leaderboard.map((entry, i) => {
+                        let rankClass = '';
+                        if (i === 0) rankClass = '';
+                        else if (i === 1) rankClass = 'silver';
+                        else if (i === 2) rankClass = 'bronze';
+                        
+                        return `
+                            <li class="leaderboard-item">
+                                <span class="rank ${rankClass}">#${i + 1}</span>
+                                <div class="info">
+                                    <div class="name">${escapeHtml(entry.name)}</div>
+                                    <div class="mode">${entry.difficulty || 'practice'} • ${entry.date || ''}</div>
+                                </div>
+                                <span class="score">${entry.score}</span>
+                            </li>
+                        `;
+                    }).join('');
+                }
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+            } catch (e) {
+                document.getElementById('loading').innerHTML = 'Failed to load stats';
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        loadStats();
+    </script>
+</body>
+</html>
