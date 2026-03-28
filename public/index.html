@@ -277,6 +277,14 @@
         .shortcut-row { display: flex; align-items: center; gap: 1rem; margin: 0.5rem 0; font-size: 0.95rem; }
         .shortcut-key { background: rgba(255,255,255,0.1); padding: 0.3rem 0.8rem; border-radius: 6px; min-width: 60px; text-align: center; }
         .shortcuts-close { margin-top: 2rem; padding: 0.6rem 2rem; background: var(--accent-primary); border: none; border-radius: 25px; color: #000; cursor: pointer; font-weight: bold; }
+        .tips-panel { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; overflow-y: auto; }
+        .tips-panel.active { display: flex; }
+        .tips-panel h2 { color: var(--accent-primary); margin-bottom: 1rem; text-align: center; }
+        .tips-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; max-width: 800px; width: 100%; }
+        .tip-card { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1rem; border-left: 3px solid var(--accent-primary); }
+        .tip-card h3 { color: var(--accent-primary); font-size: 0.95rem; margin-bottom: 0.5rem; }
+        .tip-card p { font-size: 0.85rem; color: #ccc; line-height: 1.4; }
+        .tip-icon { font-size: 1.5rem; margin-right: 0.5rem; }
         .loading { display: flex; align-items: center; justify-content: center; min-height: 250px; font-size: 0.9rem; color: #a0a0a0; grid-column: 1 / -1; }
         .spinner { width: 25px; height: 25px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #00d4ff; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 0.6rem; }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -438,7 +446,8 @@
         </div>
 
         <p class="instructions">
-            <button class="shortcuts-btn" onclick="toggleShortcuts()">⌨️ Shortcuts</button>
+            <button class="shortcuts-btn" onclick="toggleShortcuts()">⌨️</button>
+            <button class="shortcuts-btn" onclick="toggleTips()">💡 Learn</button>
             • Press <strong>1</strong> / <strong>2</strong> or click • Hover & click <strong>🔍</strong> to zoom
         </p>
     </div>
@@ -454,6 +463,37 @@
         <div class="shortcut-row"><span class="shortcut-key">H</span> Use hint</div>
         <div class="shortcut-row"><span class="shortcut-key">Esc</span> Close zoom/modal</div>
         <button class="shortcuts-close" onclick="toggleShortcuts()">Got it!</button>
+    </div>
+
+    <div class="tips-panel" id="tipsPanel">
+        <h2>🔍 How to Spot AI-Generated Images</h2>
+        <div class="tips-grid">
+            <div class="tip-card">
+                <h3>👀 Strange Eyes</h3>
+                <p>AI often struggles with eyes - look for odd reflections, mismatched colors, or unnatural pupil shapes.</p>
+            </div>
+            <div class="tip-card">
+                <h3>✋ Weird Hands</h3>
+                <p>Hands have too many or too few fingers, unusual positions, or blurry fingers fused together.</p>
+            </div>
+            <div class="tip-card">
+                <h3>🔲 Odd Textures</h3>
+                <p>Look for smudged text, distorted logos, or impossible textures in backgrounds.</p>
+            </div>
+            <div class="tip-card">
+                <h3>💇 Hair Problems</h3>
+                <p>AI hair often looks too perfect, has strand inconsistencies, or wrong directions of flow.</p>
+            </div>
+            <div class="tip-card">
+                <h3>🌈 Unnatural Colors</h3>
+                <p>Watch for impossible color combinations, odd skin tones, or overly saturated hues.</p>
+            </div>
+            <div class="tip-card">
+                <h3>🔗 Asymmetries</h3>
+                <p>Check for mismatched earrings, uneven eyebrows, or asymmetric facial features.</p>
+            </div>
+        </div>
+        <button class="shortcuts-close" onclick="toggleTips()" style="margin-top:1.5rem">Start Playing!</button>
     </div>
 
     <div class="feedback" id="feedback"></div>
@@ -816,6 +856,10 @@
 
         function toggleShortcuts() {
             document.getElementById('shortcutsPanel').classList.toggle('active');
+        }
+
+        function toggleTips() {
+            document.getElementById('tipsPanel').classList.toggle('active');
         }
 
         function loadTheme() {
