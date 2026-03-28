@@ -5,23 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI or Not?</title>
     <style>
+        :root {
+            --bg-primary: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --bg-secondary: rgba(255,255,255,0.05);
+            --bg-card: rgba(255,255,255,0.05);
+            --text-primary: #fff;
+            --text-secondary: #a0a0a0;
+            --accent-primary: #00d4ff;
+            --accent-secondary: #7b2cbf;
+            --accent-tertiary: #ff006e;
+            --border-color: rgba(255,255,255,0.2);
+            --success: #00b894;
+            --danger: #d63031;
+            --warning: #f39c12;
+        }
+        body.light {
+            --bg-primary: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 50%, #d0d5db 100%);
+            --bg-secondary: rgba(0,0,0,0.05);
+            --bg-card: rgba(255,255,255,0.8);
+            --text-primary: #1a1a2e;
+            --text-secondary: #666;
+            --border-color: rgba(0,0,0,0.1);
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: var(--bg-primary);
             min-height: 100vh;
-            color: #fff;
+            color: var(--text-primary);
             overflow-x: hidden;
+            transition: background 0.3s, color 0.3s;
         }
         .container { max-width: 900px; margin: 0 auto; padding: 1.5rem; }
         header { text-align: center; margin-bottom: 1rem; }
         h1 {
             font-size: 2.5rem;
-            background: linear-gradient(90deg, #00d4ff, #7b2cbf, #ff006e);
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), var(--accent-tertiary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+        .theme-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+        .theme-toggle:hover { background: var(--bg-card); }
         .mode-selector {
             display: flex;
             justify-content: center;
@@ -215,9 +252,25 @@
         .combo-meter { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; font-weight: bold; color: #ffd700; text-shadow: 0 0 30px rgba(255, 215, 0, 0.8); opacity: 0; pointer-events: none; }
         .combo-meter.show { animation: comboFlash 0.5s ease forwards; }
         @keyframes comboFlash { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); } }
+        .tutorial-screen {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 2000;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 2rem;
+        }
+        .tutorial-screen h2 { font-size: 2rem; margin-bottom: 1.5rem; color: var(--accent-primary); }
+        .tutorial-step { display: flex; align-items: center; gap: 1rem; margin: 1rem 0; padding: 1rem; background: var(--bg-secondary); border-radius: 12px; max-width: 500px; }
+        .tutorial-step .num { width: 40px; height: 40px; background: var(--accent-primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+        .tutorial-step .text { font-size: 0.95rem; }
+        .tutorial-step .text strong { color: var(--accent-primary); }
+        .tutorial-skip { margin-top: 1.5rem; padding: 0.6rem 1.5rem; background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 25px; cursor: pointer; font-size: 0.9rem; }
+        .tutorial-skip:hover { background: var(--bg-card); }
     </style>
 </head>
 <body>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
     <div class="container">
         <header>
             <h1>AI or Not?</h1>
@@ -320,6 +373,15 @@
         <h2 class="high-score">New High Score!</h2>
         <input type="text" class="name-input" id="playerName" placeholder="Your name" maxlength="20">
         <button class="btn" onclick="submitScore()">Submit</button>
+    </div>
+
+    <div class="tutorial-screen" id="tutorialScreen">
+        <h2>How to Play</h2>
+        <div class="tutorial-step"><span class="num">1</span><span class="text">You'll see <strong>two images</strong> - one is a <strong>real photo</strong>, one is <strong>AI-generated</strong></span></div>
+        <div class="tutorial-step"><span class="num">2</span><span class="text">Click or press <strong>1 / 2</strong> to guess which one is AI</span></div>
+        <div class="tutorial-step"><span class="num">3</span><span class="text">Build <strong>streaks</strong> for bonus points • Use <strong>💡 hints</strong> to eliminate wrong answers</span></div>
+        <div class="tutorial-step"><span class="num">4</span><span class="text">Try <strong>Tournament</strong> mode for weekly competitions</span></div>
+        <button class="tutorial-skip" onclick="skipTutorial()">Start Playing</button>
     </div>
 
     <div class="overlay-screen" id="gameOverScreen">
@@ -592,6 +654,32 @@
             document.getElementById('soundBtn').textContent = soundEnabled ? '🔊' : '🔇';
         }
 
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            const isLight = document.body.classList.contains('light');
+            document.getElementById('themeToggle').textContent = isLight ? '☀️' : '🌙';
+            localStorage.setItem('ai-or-not-theme', isLight ? 'light' : 'dark');
+        }
+
+        function loadTheme() {
+            const saved = localStorage.getItem('ai-or-not-theme');
+            if (saved === 'light') {
+                document.body.classList.add('light');
+                document.getElementById('themeToggle').textContent = '☀️';
+            }
+        }
+
+        function skipTutorial() {
+            document.getElementById('tutorialScreen').style.display = 'none';
+            localStorage.setItem('ai-or-not-tutorial-done', 'true');
+        }
+
+        function checkTutorial() {
+            if (localStorage.getItem('ai-or-not-tutorial-done')) {
+                document.getElementById('tutorialScreen').style.display = 'none';
+            }
+        }
+
         function useHint() {
             if (hintUsed || mode === 'timed') return;
             hintUsed = true;
@@ -803,6 +891,8 @@
         });
 
         updateDisplay();
+        loadTheme();
+        checkTutorial();
         loadNewRound();
 
         function openZoom(e) {
