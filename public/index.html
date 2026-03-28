@@ -409,6 +409,14 @@
                     <div class="stat-value" id="round">0</div>
                     <div class="stat-label">Round</div>
                 </div>
+                <div class="stat" id="levelStat">
+                    <div class="stat-value" id="playerLevel">1</div>
+                    <div class="stat-label">Level</div>
+                </div>
+                <div class="stat" id="dailyStreakStat">
+                    <div class="stat-value" id="dailyStreak">0</div>
+                    <div class="stat-label">🔥 Day</div>
+                </div>
                 <div class="stat">
                     <span class="cat-badge all" id="categoryBadge">All</span>
                     <div class="stat-label" style="margin-top:0.3rem">Category</div>
@@ -663,6 +671,9 @@
             document.getElementById('round').textContent = round;
             document.getElementById('streak').classList.toggle('fire', streak >= 5);
             document.querySelectorAll('.heart').forEach((h, i) => h.classList.toggle('lost', i >= lives));
+            const localStats = JSON.parse(localStorage.getItem('ai-or-not-stats') || '{"level":1,"dailyStreak":0}');
+            document.getElementById('playerLevel').textContent = localStats.level || 1;
+            document.getElementById('dailyStreak').textContent = localStats.dailyStreak || 0;
         }
 
         function getTimerDuration() {
@@ -1129,11 +1140,37 @@
         }
 
         function updateStats() {
+            const today = new Date().toISOString().split('T')[0];
             stats.played++;
             stats.totalCorrect += correctGuesses;
             stats.totalGuesses += totalGuesses;
             if (score > stats.bestScore) stats.bestScore = score;
             if (bestStreak > stats.bestStreak) stats.bestStreak = bestStreak;
+
+            // XP and Level system
+            const xpGain = score + (correctGuesses * 5) + (bestStreak * 3);
+            if (!stats.xp) stats.xp = 0;
+            if (!stats.level) stats.level = 1;
+            stats.xp += xpGain;
+            const xpForNextLevel = stats.level * 100;
+            if (stats.xp >= xpForNextLevel) {
+                stats.level++;
+                stats.xp -= xpForNextLevel;
+                showCombo('⬆️ Level ' + stats.level + '!');
+            }
+
+            // Daily streak tracking
+            if (!stats.lastPlayed) stats.lastPlayed = today;
+            const lastPlayed = stats.lastPlayed;
+            const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toISOString().split('T')[0];
+            if (lastPlayed === yesterdayStr) {
+                stats.dailyStreak = (stats.dailyStreak || 1) + 1;
+            } else if (lastPlayed !== today) {
+                stats.dailyStreak = 1;
+            }
+            stats.lastPlayed = today;
+
             ALL_ACHIEVEMENTS.filter(a => achievements[a.id]).forEach(a => { if (!stats.achievements.includes(a.id)) stats.achievements.push(a.id); });
             if (mode === 'daily' && dailySeed) {
                 if (!stats.dailyHistory) stats.dailyHistory = [];
@@ -1145,7 +1182,6 @@
             }
             if (bestStreak >= 3) {
                 if (!stats.streakHistory) stats.streakHistory = [];
-                const today = new Date().toISOString().split('T')[0];
                 stats.streakHistory.push({ date: today, streak: bestStreak, mode });
                 stats.streakHistory.sort((a, b) => b.streak - a.streak);
                 stats.streakHistory = stats.streakHistory.slice(0, 20);

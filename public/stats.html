@@ -201,6 +201,21 @@
             <div id="personalSection" style="display:none">
                 <div class="stats-grid">
                     <div class="stat-card">
+                        <h3>Level</h3>
+                        <div class="value purple" id="myLevel">1</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>XP</h3>
+                        <div class="value" id="myXp">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Daily Streak</h3>
+                        <div class="value" id="myDailyStreak">0</div>
+                    </div>
+                </div>
+
+                <div class="stats-grid" style="margin-top:0.5rem;">
+                    <div class="stat-card">
                         <h3>Best Score</h3>
                         <div class="value gold" id="myBestScore">0</div>
                     </div>
@@ -264,7 +279,10 @@
         }
 
         function loadPersonalStats() {
-            const localStats = JSON.parse(localStorage.getItem('ai-or-not-stats') || '{"played":0,"bestScore":0,"bestStreak":0,"totalCorrect":0,"totalGuesses":0,"achievements":[],"dailyHistory":[],"streakHistory":[]}');
+            const localStats = JSON.parse(localStorage.getItem('ai-or-not-stats') || '{"played":0,"bestScore":0,"bestStreak":0,"totalCorrect":0,"totalGuesses":0,"achievements":[],"dailyHistory":[],"streakHistory":[],"level":1,"xp":0,"dailyStreak":0}');
+            document.getElementById('myLevel').textContent = localStats.level || 1;
+            document.getElementById('myXp').textContent = (localStats.xp || 0) + '/' + (localStats.level || 1) * 100;
+            document.getElementById('myDailyStreak').textContent = localStats.dailyStreak || 0;
             document.getElementById('myBestScore').textContent = localStats.bestScore || 0;
             document.getElementById('myBestStreak').textContent = localStats.bestStreak || 0;
             document.getElementById('myTotalPlayed').textContent = localStats.played || 0;
