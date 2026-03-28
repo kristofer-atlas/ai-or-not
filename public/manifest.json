@@ -1,0 +1,36 @@
+{
+  "name": "AI or Not?",
+  "short_name": "AI or Not",
+  "description": "Guess which image is AI-generated - a fun visual game",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#00d4ff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231a1a2e' width='100' height='100' rx='20'/><text y='65' x='50' text-anchor='middle' font-size='50'>🤖</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["games", "entertainment"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Play Practice",
+      "short_name": "Practice",
+      "description": "Start a practice game",
+      "url": "/?mode=practice",
+      "icons": [{ "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231a1a2e' width='100' height='100' rx='20'/><text y='65' x='50' text-anchor='middle' font-size='50'>🎮</text></svg>", "sizes": "any" }]
+    },
+    {
+      "name": "Daily Challenge",
+      "short_name": "Daily",
+      "description": "Play today's daily challenge",
+      "url": "/?mode=daily",
+      "icons": [{ "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231a1a2e' width='100' height='100' rx='20'/><text y='65' x='50' text-anchor='middle' font-size='50'>📅</text></svg>", "sizes": "any" }]
+    }
+  ]
+}

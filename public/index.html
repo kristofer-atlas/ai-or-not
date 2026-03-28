@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#00d4ff">
+    <link rel="manifest" href="/manifest.json">
     <title>AI or Not?</title>
     <style>
         :root {
@@ -1055,6 +1057,11 @@
         loadTheme();
         checkTutorial();
         loadNewRound();
+
+        // PWA registration
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        }
 
         function openZoom(e) {
             e.stopPropagation();
