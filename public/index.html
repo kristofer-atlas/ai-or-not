@@ -445,6 +445,7 @@
                     <button class="powerup-btn double" id="doubleBtn" onclick="usePowerup('double')" title="2x points next answer"><span class="icon">×2</span></button>
                 </div>
                 <button class="action-btn sound" id="soundBtn" onclick="toggleSound()">🔊</button>
+                <input type="range" id="volumeSlider" min="0" max="100" value="50" style="width:60px;cursor:pointer;" onchange="setVolume(this.value)" title="Volume">
             </div>
         </div>
 
@@ -578,6 +579,7 @@
         let endlessTimerBase = 12;
         let endlessMultiplier = 1;
         let soundEnabled = true;
+        let soundVolume = 0.5;
         let achievements = JSON.parse(localStorage.getItem('ai-or-not-achievements') || '{}');
         let stats = JSON.parse(localStorage.getItem('ai-or-not-stats') || '{"played":0,"bestScore":0,"bestStreak":0,"totalCorrect":0,"totalGuesses":0,"achievements":[],"dailyHistory":[]}');
 
@@ -614,11 +616,18 @@
                     osc.frequency.setValueAtTime(200, ctx.currentTime);
                     osc.frequency.setValueAtTime(150, ctx.currentTime + 0.1);
                 }
-                gain.gain.setValueAtTime(0.12, ctx.currentTime);
+                gain.gain.setValueAtTime(0.12 * soundVolume, ctx.currentTime);
                 gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.25);
                 osc.start(ctx.currentTime);
                 osc.stop(ctx.currentTime + 0.25);
             } catch(e) {}
+        }
+
+        function triggerHaptic(type) {
+            if (!navigator.vibrate) return;
+            if (type === 'correct') navigator.vibrate(30);
+            else if (type === 'wrong') navigator.vibrate([50, 30, 50]);
+            else if (type === 'achievement') navigator.vibrate([50, 50, 50, 50, 100]);
         }
 
         async function fetchNewRound() {
@@ -776,6 +785,7 @@
             toast.querySelector('.icon').textContent = ach.icon;
             toast.classList.add('show');
             triggerConfetti();
+            triggerHaptic('achievement');
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
@@ -854,6 +864,20 @@
         function toggleSound() {
             soundEnabled = !soundEnabled;
             document.getElementById('soundBtn').textContent = soundEnabled ? '🔊' : '🔇';
+            localStorage.setItem('ai-or-not-sound', soundEnabled ? 'on' : 'off');
+        }
+
+        function setVolume(val) {
+            soundVolume = val / 100;
+            localStorage.setItem('ai-or-not-volume', soundVolume);
+            document.getElementById('soundBtn').textContent = soundVolume === 0 ? '🔇' : '🔊';
+        }
+
+        function loadSoundPrefs() {
+            const vol = localStorage.getItem('ai-or-not-volume');
+            if (vol) { soundVolume = parseFloat(vol); document.getElementById('volumeSlider').value = soundVolume * 100; }
+            const sound = localStorage.getItem('ai-or-not-sound');
+            if (sound === 'off') { soundEnabled = false; document.getElementById('soundBtn').textContent = '🔇'; }
         }
 
         function toggleTheme() {
@@ -1015,6 +1039,7 @@
                 }
                 showFeedback(true);
                 playSound('correct');
+                triggerHaptic('correct');
                 if (streak === 5) { showStreakPopup('🔥 5 Streak!'); checkAchievement('perfect_round'); }
                 if (streak === 10) { showStreakPopup('🔥🔥 10 Streak!'); checkAchievement('streak_10'); }
                 if (streak >= 5 && streak % 5 === 0 && mode !== 'endless') showCombo('x' + Math.min(1 + Math.floor(streak / 5), 5));
@@ -1025,6 +1050,7 @@
                 if (mode !== 'timed' && mode !== 'tournament') lives--;
                 showFeedback(false);
                 playSound('wrong');
+                triggerHaptic('wrong');
             }
             updateDisplay();
             if (mode === 'tournament' && tournamentRound >= TOURNAMENT_ROUNDS) {
@@ -1168,6 +1194,7 @@
 
         updateDisplay();
         loadTheme();
+        loadSoundPrefs();
         checkTutorial();
         loadNewRound();
 
