@@ -170,7 +170,67 @@
         .powerup-active { animation: powerupPulse 0.5s ease; }
         @keyframes powerupPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
         .game-area { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 0.8rem; }
-        @media (max-width: 600px) { .game-area { grid-template-columns: 1fr; } }
+        @media (max-width: 600px) {
+            .game-area { grid-template-columns: 1fr; }
+            .container { padding: 1rem 0.5rem; }
+            h1 { font-size: 1.8rem; }
+            .mode-selector { gap: 0.2rem; }
+            .mode-btn { padding: 0.3rem 0.6rem; font-size: 0.7rem; }
+            .category-selector { gap: 0.2rem; }
+            .category-btn { padding: 0.2rem 0.5rem; font-size: 0.65rem; }
+            .stats-row { gap: 0.5rem; }
+            .stat-value { font-size: 1.1rem; }
+            .game-header { flex-direction: column; align-items: stretch; }
+            .image-card { cursor: grab; }
+            .image-card:active { cursor: grabbing; }
+            .bottom-nav { display: flex !important; }
+            .container { padding-bottom: 80px; }
+            header { flex-direction: column; gap: 0.5rem; }
+            header > div:last-child { display: none; }
+        }
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26, 26, 46, 0.98);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 0.5rem;
+            justify-content: space-around;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        .bottom-nav a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+            padding: 0.5rem;
+            color: #888;
+            text-decoration: none;
+            font-size: 0.65rem;
+            border-radius: 12px;
+            transition: all 0.2s;
+            min-width: 60px;
+        }
+        .bottom-nav a span { font-size: 1.4rem; }
+        .bottom-nav a:hover, .bottom-nav a.active { color: #00d4ff; background: rgba(0,212,255,0.1); }
+        .swipe-hint {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: #888;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .swipe-hint.show { opacity: 1; }
         .image-card {
             position: relative;
             border-radius: 10px;
@@ -979,6 +1039,28 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeZoom();
         });
+
+        // Swipe gesture support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            const diff = touchEndX - touchStartX;
+            if (Math.abs(diff) > 50 && !document.querySelector('.overlay-screen.show')) {
+                const cards = document.querySelectorAll('.image-card');
+                if (cards.length === 2) {
+                    if (diff < 0 && selectedCard < 1) { selectedCard = 1; cards.forEach((c, i) => c.classList.toggle('selected', i === 1)); }
+                    else if (diff > 0 && selectedCard > 0) { selectedCard = 0; cards.forEach((c, i) => c.classList.toggle('selected', i === 0)); }
+                }
+            }
+        }, { passive: true });
     </script>
+
+    <nav class="bottom-nav">
+        <a href="/" class="active"><span>🎮</span>Play</a>
+        <a href="/leaderboard.html"><span>🏆</span>Leaderboard</a>
+        <a href="/stats.html"><span>📊</span>Stats</a>
+    </nav>
 </body>
 </html>
