@@ -102,59 +102,165 @@
             margin: 0 auto 1rem;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+        .daily-history { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+        .daily-badge {
+            padding: 0.4rem 0.8rem;
+            background: rgba(243, 156, 18, 0.2);
+            border: 1px solid #f39c12;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .daily-badge .date { color: #888; }
+        .daily-badge .score { color: #f39c12; font-weight: bold; }
+        .daily-badge .acc { color: #00d4ff; }
+        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+        .tab { padding: 0.6rem 1.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 25px; color: #888; cursor: pointer; }
+        .tab.active { background: linear-gradient(90deg, #00d4ff, #7b2cbf); border-color: transparent; color: #fff; }
+        .achievement-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.8rem; }
+        .achievement-card { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1rem; text-align: center; }
+        .achievement-card .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+        .achievement-card .name { font-size: 0.8rem; font-weight: bold; margin-bottom: 0.3rem; }
+        .achievement-card .desc { font-size: 0.65rem; color: #888; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <a href="/" class="back-btn">← Play</a>
-            <h1>Global Statistics</h1>
+            <h1>Statistics</h1>
         </header>
 
-        <div class="loading" id="loading">
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('global')">Global</button>
+            <button class="tab" onclick="showTab('personal')">My Stats</button>
+        </div>
+
+        <div id="loading">
             <div class="spinner"></div>
             Loading stats...
         </div>
 
         <div id="content" style="display: none;">
-            <div class="today-stats">
-                <div class="today-card">
-                    <div class="num" id="todayGames">0</div>
-                    <div class="label">Games Today</div>
+            <div id="globalSection">
+                <div class="today-stats">
+                    <div class="today-card">
+                        <div class="num" id="todayGames">0</div>
+                        <div class="label">Games Today</div>
+                    </div>
+                    <div class="today-card">
+                        <div class="num" id="todayPlayers">0</div>
+                        <div class="label">Players Today</div>
+                    </div>
+                    <div class="today-card">
+                        <div class="num" id="todayAccuracy">0%</div>
+                        <div class="label">Accuracy Today</div>
+                    </div>
                 </div>
-                <div class="today-card">
-                    <div class="num" id="todayPlayers">0</div>
-                    <div class="label">Players Today</div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Games</h3>
+                        <div class="value" id="totalGames">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Best Score</h3>
+                        <div class="value gold" id="bestScore">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Avg Accuracy</h3>
+                        <div class="value green" id="avgAccuracy">0%</div>
+                    </div>
                 </div>
-                <div class="today-card">
-                    <div class="num" id="todayAccuracy">0%</div>
-                    <div class="label">Accuracy Today</div>
+
+                <div class="section">
+                    <h2>🏆 Top Scores</h2>
+                    <ul class="leaderboard-list" id="leaderboard"></ul>
                 </div>
             </div>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>Total Games</h3>
-                    <div class="value" id="totalGames">0</div>
+            <div id="personalSection" style="display:none">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Best Score</h3>
+                        <div class="value gold" id="myBestScore">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Best Streak</h3>
+                        <div class="value" id="myBestStreak">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Played</h3>
+                        <div class="value" id="myTotalPlayed">0</div>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <h3>Best Score</h3>
-                    <div class="value gold" id="bestScore">0</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Avg Accuracy</h3>
-                    <div class="value green" id="avgAccuracy">0%</div>
-                </div>
-            </div>
 
-            <div class="section">
-                <h2>🏆 Top Scores</h2>
-                <ul class="leaderboard-list" id="leaderboard"></ul>
+                <div class="section">
+                    <h2>📅 Daily Challenge History</h2>
+                    <div class="daily-history" id="dailyHistory"></div>
+                </div>
+
+                <div class="section">
+                    <h2>🏅 Achievements</h2>
+                    <div class="achievement-grid" id="achievements"></div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        const ALL_ACHIEVEMENTS = [
+            { id: 'first_game', name: 'First Steps', desc: 'Complete your first game', icon: '🎮' },
+            { id: 'perfect_round', name: 'Perfect Start', desc: 'Get 5 correct in a row', icon: '⭐' },
+            { id: 'streak_10', name: 'On Fire', desc: 'Get a 10 streak', icon: '🔥' },
+            { id: 'score_100', name: 'Century', desc: 'Score 100 points', icon: '💯' },
+            { id: 'speed_demon', name: 'Speed Demon', desc: 'Answer in under 2 seconds', icon: '⚡' },
+            { id: 'no_mistakes', name: 'Flawless', desc: 'Complete a game with no wrong answers', icon: '💎' },
+            { id: 'daily_player', name: 'Daily Player', desc: 'Play the daily challenge', icon: '📅' },
+            { id: 'time_trialist', name: 'Time Trialist', desc: 'Complete 10 rounds in timed mode', icon: '⏱️' },
+            { id: 'tournament_champion', name: 'Tournament Champion', desc: 'Win a weekly tournament', icon: '🏆' },
+            { id: 'tournament_perfect', name: 'Tournament Perfect', desc: 'Get 100% in a tournament', icon: '💯' },
+        ];
+
+        function showTab(tab) {
+            document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', (tab === 'global' && i === 0) || (tab === 'personal' && i === 1)));
+            document.getElementById('globalSection').style.display = tab === 'global' ? 'block' : 'none';
+            document.getElementById('personalSection').style.display = tab === 'personal' ? 'block' : 'none';
+            if (tab === 'personal') loadPersonalStats();
+        }
+
+        function loadPersonalStats() {
+            const localStats = JSON.parse(localStorage.getItem('ai-or-not-stats') || '{"played":0,"bestScore":0,"bestStreak":0,"totalCorrect":0,"totalGuesses":0,"achievements":[],"dailyHistory":[]}');
+            document.getElementById('myBestScore').textContent = localStats.bestScore || 0;
+            document.getElementById('myBestStreak').textContent = localStats.bestStreak || 0;
+            document.getElementById('myTotalPlayed').textContent = localStats.played || 0;
+
+            const historyEl = document.getElementById('dailyHistory');
+            if (localStats.dailyHistory && localStats.dailyHistory.length > 0) {
+                historyEl.innerHTML = localStats.dailyHistory.slice(0, 14).map(d => `
+                    <div class="daily-badge">
+                        <span class="date">${d.date.slice(5)}</span>
+                        <span class="score">${d.score}pts</span>
+                        <span class="acc">${d.accuracy}%</span>
+                    </div>
+                `).join('');
+            } else {
+                historyEl.innerHTML = '<p style="color:#888;font-size:0.9rem;">No daily challenges completed yet.</p>';
+            }
+
+            const achieved = JSON.parse(localStorage.getItem('ai-or-not-achievements') || '{}');
+            const achEl = document.getElementById('achievements');
+            achEl.innerHTML = ALL_ACHIEVEMENTS.map(a => `
+                <div class="achievement-card" style="opacity:${achieved[a.id] ? 1 : 0.3}">
+                    <div class="icon">${a.icon}</div>
+                    <div class="name">${a.name}</div>
+                    <div class="desc">${a.desc}</div>
+                </div>
+            `).join('');
+        }
+
         async function loadStats() {
             try {
                 const [statsRes, lbRes] = await Promise.all([

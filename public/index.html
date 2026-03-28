@@ -430,7 +430,7 @@
         const TOURNAMENT_ROUNDS = 10;
         let soundEnabled = true;
         let achievements = JSON.parse(localStorage.getItem('ai-or-not-achievements') || '{}');
-        let stats = JSON.parse(localStorage.getItem('ai-or-not-stats') || '{"played":0,"bestScore":0,"bestStreak":0,"totalCorrect":0,"totalGuesses":0,"achievements":[]}');
+        let stats = JSON.parse(localStorage.getItem('ai-or-not-stats') || '{"played":0,"bestScore":0,"bestStreak":0,"totalCorrect":0,"totalGuesses":0,"achievements":[],"dailyHistory":[]}');
 
         const ALL_ACHIEVEMENTS = [
             { id: 'first_game', name: 'First Steps', desc: 'Complete your first game', icon: '🎮' },
@@ -863,13 +863,24 @@
             if (score > stats.bestScore) stats.bestScore = score;
             if (bestStreak > stats.bestStreak) stats.bestStreak = bestStreak;
             ALL_ACHIEVEMENTS.filter(a => achievements[a.id]).forEach(a => { if (!stats.achievements.includes(a.id)) stats.achievements.push(a.id); });
+            if (mode === 'daily' && dailySeed) {
+                if (!stats.dailyHistory) stats.dailyHistory = [];
+                const existing = stats.dailyHistory.find(d => d.date === dailySeed);
+                if (existing) { existing.score = Math.max(existing.score, score); existing.accuracy = Math.max(existing.accuracy, totalGuesses > 0 ? Math.round((correctGuesses / totalGuesses) * 100) : 0); }
+                else stats.dailyHistory.push({ date: dailySeed, score, accuracy: totalGuesses > 0 ? Math.round((correctGuesses / totalGuesses) * 100) : 0 });
+                stats.dailyHistory.sort((a, b) => b.date.localeCompare(a.date));
+                stats.dailyHistory = stats.dailyHistory.slice(0, 30);
+            }
             localStorage.setItem('ai-or-not-stats', JSON.stringify(stats));
         }
 
         function shareResult() {
-            const text = `AI or Not? - ${mode === 'daily' ? 'Daily' : mode === 'timed' ? 'Timed' : 'Practice'} - Score: ${score} | Accuracy: ${totalGuesses > 0 ? Math.round((correctGuesses / totalGuesses) * 100) : 0}% | Streak: ${bestStreak}`;
+            const accuracy = totalGuesses > 0 ? Math.round((correctGuesses / totalGuesses) * 100) : 0;
+            const emoji = accuracy === 100 ? '💯' : accuracy >= 80 ? '🔥' : accuracy >= 50 ? '⭐' : '🎮';
+            const modeName = mode === 'daily' ? 'Daily Challenge' : mode === 'timed' ? 'Timed Mode' : mode === 'tournament' ? 'Tournament' : 'Practice';
+            const text = `${emoji} AI or Not? - ${modeName}\n\n🎯 Score: ${score}\n📊 Accuracy: ${accuracy}%\n🔥 Streak: ${bestStreak}\n\nCan you beat my score?`;
             if (navigator.share) navigator.share({ text });
-            else { navigator.clipboard.writeText(text); alert('Copied!'); }
+            else { navigator.clipboard.writeText(text); alert('Result copied to clipboard!'); }
         }
 
         function restartGame() {
