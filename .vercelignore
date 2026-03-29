@@ -1,0 +1,12 @@
+node_modules
+.git
+.github
+.vercel
+dist
+CLAUDE.md
+README.md
+generate-images.ts
+generate_images.py
+generate_sdxl.py
+bun.lockb
+.DS_Store
