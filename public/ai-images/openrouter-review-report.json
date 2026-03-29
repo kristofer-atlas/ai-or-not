@@ -1,0 +1,342 @@
+{
+  "generated_at": "2026-03-29T21:57:07.177Z",
+  "generation_model": "google/gemini-3.1-flash-image-preview",
+  "review_model": "google/gemini-3-flash-preview",
+  "max_attempts": 6,
+  "review_confidence_threshold": 0.55,
+  "request_timeout_ms": 180000,
+  "start_index": 0,
+  "resume": true,
+  "results": [
+    {
+      "aiIndex": 0,
+      "category": "landscape",
+      "real": "https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=600&h=600&fit=crop",
+      "output": "/home/me/Projects/morgaesis/ai-or-not/public/ai-images/ai-0.jpg",
+      "attempts": []
+    },
+    {
+      "aiIndex": 1,
+      "category": "portrait",
+      "real": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=600&fit=crop",
+      "output": "/home/me/Projects/morgaesis/ai-or-not/public/ai-images/ai-1.jpg",
+      "attempts": []
+    },
+    {
+      "aiIndex": 2,
+      "category": "landscape",
+      "real": "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&h=600&fit=crop",
+      "output": "/home/me/Projects/morgaesis/ai-or-not/public/ai-images/ai-2.jpg",
+      "attempts": []
+    },
+    {
+      "aiIndex": 3,
+      "category": "nature",
+      "real": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&h=600&fit=crop",
+      "output": "/home/me/Projects/morgaesis/ai-or-not/public/ai-images/ai-3.jpg",
+      "attempts": []
+    },
+    {
+      "aiIndex": 4,
+      "category": "animal",
+      "real": "https://images.unsplash.com/photo-1529778873920-4da4926a72c2?w=600&h=600&fit=crop",
+      "output": "/home/me/Projects/morgaesis/ai-or-not/public/ai-images/ai-4.jpg",
+      "attempts": []
+    },
+    {
+      "aiIndex": 5,
+      "category": "portrait",
+      "real": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=600&fit=crop",
+      "output": "/home/me/Projects/morgaesis/ai-or-not/public/ai-images/ai-5.jpg",
+      "attempts": []
+    },
+    {
+      "aiIndex": 6,
+      "category": "landscape",
+      "real": "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600&h=600&fit=crop",
+      "output": "/home/me/Projects/morgaesis/ai-or-not/public/ai-images/ai-6.jpg",
+      "attempts": []
+    },
+    {
+      "aiIndex": 7,
+      "category": "landscape",
+      "real": "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=600&h=600&fit=crop",
+      "output": "/home/me/Projects/morgaesis/ai-or-not/public/ai-images/ai-7.jpg",
+      "attempts": []
+    },
+    {
+      "aiIndex": 8,
+      "category": "architecture",
+      "real": "https://images.unsplash.com/photo-1516117172878-fd2c41f4a759?w=600&h=600&fit=crop",
+      "output": "/home/me/Projects/morgaesis/ai-or-not/public/ai-images/ai-8.jpg",
+      "attempts": []
+    },
+    {
+      "aiIndex": 9,
+      "category": "fantasy",
+      "real": "https://images.unsplash.com/photo-1493238792000-8113da705763?w=600&h=600&fit=crop",
+      "output": "/home/me/Projects/morgaesis/ai-or-not/public/ai-images/ai-9.jpg",
+      "attempts": []
+    },
+    {
+      "aiIndex": 10,
+      "category": "architecture",
+      "real": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=600&fit=crop",
+      "output": "/home/me/Projects/morgaesis/ai-or-not/public/ai-images/ai-10.jpg",
+      "attempts": []
+    },
+    {
+      "aiIndex": 11,
+      "category": "fantasy",
+      "real": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&h=600&fit=crop",
+      "output": "/home/me/Projects/morgaesis/ai-or-not/public/ai-images/ai-11.jpg",
+      "attempts": []
+    },
+    {
+      "aiIndex": 12,
+      "category": "nature",
+      "real": "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=600&h=600&fit=crop",
+      "output": "/home/me/Projects/morgaesis/ai-or-not/public/ai-images/ai-12.jpg",
+      "attempts": []
+    },
+    {
+      "aiIndex": 13,
+      "category": "landscape",
+      "real": "https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=600&h=600&fit=crop",
+      "output": "/home/me/Projects/morgaesis/ai-or-not/public/ai-images/ai-13.jpg",
+      "attempts": []
+    },
+    {
+      "aiIndex": 14,
+      "category": "fantasy",
+      "real": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&h=600&fit=crop",
+      "output": "/home/me/Projects/morgaesis/ai-or-not/public/ai-images/ai-14.jpg",
+      "attempts": []
+    },
+    {
+      "aiIndex": 15,
+      "category": "fantasy",
+      "real": "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&h=600&fit=crop",
+      "output": "/home/me/Projects/morgaesis/ai-or-not/public/ai-images/ai-15.jpg",
+      "attempts": []
+    },
+    {
+      "aiIndex": 16,
+      "category": "fantasy",
+      "real": "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=600&h=600&fit=crop",
+      "output": "/home/me/Projects/morgaesis/ai-or-not/public/ai-images/ai-16.jpg",
+      "attempts": []
+    },
+    {
+      "aiIndex": 17,
+      "category": "fantasy",
+      "real": "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=600&h=600&fit=crop",
+      "output": "/home/me/Projects/morgaesis/ai-or-not/public/ai-images/ai-17.jpg",
+      "attempts": []
+    },
+    {
+      "aiIndex": 18,
+      "category": "fantasy",
+      "real": "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600&h=600&fit=crop",
+      "output": "/home/me/Projects/morgaesis/ai-or-not/public/ai-images/ai-18.jpg",
+      "attempts": []
+    },
+    {
+      "aiIndex": 19,
+      "category": "fantasy",
+      "real": "https://images.unsplash.com/photo-1494500764479-0c8f2919a3d8?w=600&h=600&fit=crop",
+      "output": "/home/me/Projects/morgaesis/ai-or-not/public/ai-images/ai-19.jpg",
+      "attempts": []
+    }
+  ],
+  "holdout_evaluation": {
+    "evaluations": [
+      {
+        "aiIndex": 0,
+        "category": "landscape",
+        "candidate_first": false,
+        "verdict": "candidate",
+        "confidence": 0.95,
+        "can_tell": true,
+        "correct_identification": true
+      },
+      {
+        "aiIndex": 1,
+        "category": "portrait",
+        "candidate_first": false,
+        "verdict": "reference",
+        "confidence": 0.95,
+        "can_tell": true,
+        "correct_identification": false
+      },
+      {
+        "aiIndex": 2,
+        "category": "landscape",
+        "candidate_first": true,
+        "verdict": "candidate",
+        "confidence": 0.95,
+        "can_tell": true,
+        "correct_identification": true
+      },
+      {
+        "aiIndex": 3,
+        "category": "nature",
+        "candidate_first": true,
+        "verdict": "candidate",
+        "confidence": 0.95,
+        "can_tell": true,
+        "correct_identification": true
+      },
+      {
+        "aiIndex": 4,
+        "category": "animal",
+        "candidate_first": true,
+        "verdict": "candidate",
+        "confidence": 0.95,
+        "can_tell": true,
+        "correct_identification": true
+      },
+      {
+        "aiIndex": 5,
+        "category": "portrait",
+        "candidate_first": true,
+        "verdict": "candidate",
+        "confidence": 0.95,
+        "can_tell": true,
+        "correct_identification": true
+      },
+      {
+        "aiIndex": 6,
+        "category": "landscape",
+        "candidate_first": false,
+        "verdict": "candidate",
+        "confidence": 0.9,
+        "can_tell": true,
+        "correct_identification": true
+      },
+      {
+        "aiIndex": 7,
+        "category": "landscape",
+        "candidate_first": false,
+        "verdict": "candidate",
+        "confidence": 0.95,
+        "can_tell": true,
+        "correct_identification": true
+      },
+      {
+        "aiIndex": 8,
+        "category": "architecture",
+        "candidate_first": false,
+        "verdict": "candidate",
+        "confidence": 0.9,
+        "can_tell": true,
+        "correct_identification": true
+      },
+      {
+        "aiIndex": 9,
+        "category": "fantasy",
+        "candidate_first": false,
+        "verdict": "candidate",
+        "confidence": 0.95,
+        "can_tell": true,
+        "correct_identification": true
+      },
+      {
+        "aiIndex": 10,
+        "category": "architecture",
+        "candidate_first": false,
+        "verdict": "candidate",
+        "confidence": 0.92,
+        "can_tell": true,
+        "correct_identification": true
+      },
+      {
+        "aiIndex": 11,
+        "category": "fantasy",
+        "candidate_first": false,
+        "verdict": "candidate",
+        "confidence": 0.95,
+        "can_tell": true,
+        "correct_identification": true
+      },
+      {
+        "aiIndex": 12,
+        "category": "nature",
+        "candidate_first": true,
+        "verdict": "candidate",
+        "confidence": 0.95,
+        "can_tell": true,
+        "correct_identification": true
+      },
+      {
+        "aiIndex": 13,
+        "category": "landscape",
+        "candidate_first": false,
+        "verdict": "candidate",
+        "confidence": 0.95,
+        "can_tell": true,
+        "correct_identification": true
+      },
+      {
+        "aiIndex": 14,
+        "category": "fantasy",
+        "candidate_first": true,
+        "verdict": "candidate",
+        "confidence": 0.95,
+        "can_tell": true,
+        "correct_identification": true
+      },
+      {
+        "aiIndex": 15,
+        "category": "fantasy",
+        "candidate_first": false,
+        "verdict": "candidate",
+        "confidence": 0.9,
+        "can_tell": true,
+        "correct_identification": true
+      },
+      {
+        "aiIndex": 16,
+        "category": "fantasy",
+        "candidate_first": true,
+        "verdict": "candidate",
+        "confidence": 0.95,
+        "can_tell": true,
+        "correct_identification": true
+      },
+      {
+        "aiIndex": 17,
+        "category": "fantasy",
+        "candidate_first": false,
+        "verdict": "candidate",
+        "confidence": 0.95,
+        "can_tell": true,
+        "correct_identification": true
+      },
+      {
+        "aiIndex": 18,
+        "category": "fantasy",
+        "candidate_first": false,
+        "verdict": "candidate",
+        "confidence": 0.85,
+        "can_tell": true,
+        "correct_identification": true
+      },
+      {
+        "aiIndex": 19,
+        "category": "fantasy",
+        "candidate_first": true,
+        "verdict": "candidate",
+        "confidence": 0.95,
+        "can_tell": true,
+        "correct_identification": true
+      }
+    ],
+    "summary": {
+      "total": 20,
+      "correct_identifications": 19,
+      "success_rate": 0.95,
+      "greater_than_50_percent": true
+    }
+  }
+}

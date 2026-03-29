@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ai-or-not-v1';
+const CACHE_NAME = 'ai-or-not-v2';
 const ASSETS = [
   '/',
   '/index.html',
@@ -25,13 +25,28 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
-  event.respondWith(
-    fetch(event.request).then(res => {
+
+  event.respondWith((async () => {
+    try {
+      const res = await fetch(event.request);
       if (res.ok) {
         const clone = res.clone();
         caches.open(CACHE_NAME).then(c => c.put(event.request, clone));
       }
       return res;
-    }).catch(() => caches.match(event.request))
-  );
+    } catch {
+      const cached = await caches.match(event.request);
+      if (cached) return cached;
+
+      if (event.request.mode === 'navigate') {
+        const shell = await caches.match('/index.html');
+        if (shell) return shell;
+      }
+
+      return new Response('Offline', {
+        status: 503,
+        headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+      });
+    }
+  })());
 });

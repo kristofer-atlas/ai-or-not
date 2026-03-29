@@ -3,6 +3,13 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "dataset:daily": "bun run scripts/daily-dataset-pipeline.ts",
+    "dataset:fill": "bun run scripts/daily-dataset-pipeline.ts --fill-to-target",
+    "local:gallery": "bun run scripts/serve-local-gallery.ts",
+    "openrouter:list-models": "bun run scripts/generate-openrouter-images.ts --list-models",
+    "openrouter:generate-images": "bun run scripts/generate-openrouter-images.ts"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },

@@ -3,35 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#00d4ff">
+    <meta name="theme-color" content="#ff9f43">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Syne:wght@500;700;800&display=swap" rel="stylesheet">
     <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d1421'/%3E%3Ccircle cx='24' cy='32' r='12' fill='%23ffb347'/%3E%3Ccircle cx='40' cy='32' r='12' fill='%2335d0ba' opacity='0.92'/%3E%3C/svg%3E">
     <title>AI or Not?</title>
     <style>
         :root {
-            --bg-primary: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            --bg-secondary: rgba(255,255,255,0.05);
-            --bg-card: rgba(255,255,255,0.05);
-            --text-primary: #fff;
-            --text-secondary: #a0a0a0;
-            --accent-primary: #00d4ff;
-            --accent-secondary: #7b2cbf;
-            --accent-tertiary: #ff006e;
-            --border-color: rgba(255,255,255,0.2);
-            --success: #00b894;
-            --danger: #d63031;
-            --warning: #f39c12;
+            --bg-primary: radial-gradient(1200px 700px at -15% -20%, #2b3f66 0%, transparent 55%),
+                radial-gradient(900px 620px at 115% -5%, #3b2f6c 0%, transparent 60%),
+                linear-gradient(160deg, #0d1421 0%, #141d2f 46%, #1a273d 100%);
+            --bg-secondary: rgba(255, 255, 255, 0.07);
+            --bg-card: rgba(16, 26, 42, 0.68);
+            --text-primary: #f5f7ff;
+            --text-secondary: #9db0cd;
+            --accent-primary: #ffb347;
+            --accent-secondary: #35d0ba;
+            --accent-tertiary: #ff6f61;
+            --border-color: rgba(255, 255, 255, 0.16);
+            --success: #56d490;
+            --danger: #f26f74;
+            --warning: #ffb347;
         }
         body.light {
-            --bg-primary: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 50%, #d0d5db 100%);
-            --bg-secondary: rgba(0,0,0,0.05);
-            --bg-card: rgba(255,255,255,0.8);
-            --text-primary: #1a1a2e;
-            --text-secondary: #666;
-            --border-color: rgba(0,0,0,0.1);
+            --bg-primary: radial-gradient(1000px 650px at 0% 0%, #fff6e8 0%, transparent 56%),
+                radial-gradient(920px 640px at 105% 0%, #ecf3ff 0%, transparent 58%),
+                linear-gradient(160deg, #f5f8ff 0%, #edf2fb 48%, #e7edf9 100%);
+            --bg-secondary: rgba(19, 29, 45, 0.08);
+            --bg-card: rgba(255, 255, 255, 0.88);
+            --text-primary: #162034;
+            --text-secondary: #4f5f7d;
+            --border-color: rgba(22, 32, 52, 0.12);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'IBM Plex Sans', system-ui, sans-serif;
             background: var(--bg-primary);
             min-height: 100vh;
             color: var(--text-primary);
@@ -41,6 +49,7 @@
         .container { max-width: 900px; margin: 0 auto; padding: 1.5rem; }
         header { text-align: center; margin-bottom: 1rem; }
         h1 {
+            font-family: 'Syne', 'IBM Plex Sans', sans-serif;
             font-size: 2.5rem;
             background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), var(--accent-tertiary));
             -webkit-background-clip: text;
@@ -294,6 +303,10 @@
         @keyframes fire { from { text-shadow: 0 0 10px #ff6b35; } to { text-shadow: 0 0 20px #ff8800; } }
         @keyframes score-pop { 0% { transform: scale(1); } 50% { transform: scale(1.3); color: #ffd700; } 100% { transform: scale(1); } }
         .stat-value.score-pop { animation: score-pop 0.3s ease; }
+        .xp-bar-container { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.8rem; padding: 0 0.5rem; }
+        .xp-bar-label { font-size: 0.7rem; color: #888; white-space: nowrap; }
+        .xp-bar { flex: 1; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+        .xp-bar-fill { height: 100%; background: linear-gradient(90deg, #00d4ff, #7b2cbf); border-radius: 4px; transition: width 0.5s ease; }
         @keyframes cardFlip { 0% { transform: rotateY(90deg) scale(0.8); opacity: 0; } 100% { transform: rotateY(0) scale(1); opacity: 1; } }
         .image-card.visible { animation: cardFlip 0.4s ease forwards; }
         @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -357,36 +370,607 @@
         .tutorial-step .text strong { color: var(--accent-primary); }
         .tutorial-skip { margin-top: 1.5rem; padding: 0.6rem 1.5rem; background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 25px; cursor: pointer; font-size: 0.9rem; }
         .tutorial-skip:hover { background: var(--bg-card); }
+        .analysis-panel {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1rem;
+            max-width: 500px;
+            width: calc(100vw - 2rem);
+            z-index: 100;
+            animation: slideUp 0.3s ease;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        @keyframes slideUp { from { transform: translateX(-50%) translateY(20px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
+        .analysis-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .analysis-title { font-weight: bold; font-size: 0.95rem; color: var(--text-primary); }
+        .analysis-close {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0 0.5rem;
+            line-height: 1;
+        }
+        .analysis-close:hover { color: var(--text-primary); }
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .analysis-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+            padding: 0.4rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+        }
+        .analysis-label { font-size: 0.65rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+        .analysis-value { font-size: 0.8rem; color: var(--text-primary); font-weight: 500; }
+        .ai-tag { color: #ff4757 !important; }
+        .real-tag { color: #00b894 !important; }
+        .analysis-tell {
+            padding: 0.6rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.4;
+        }
+        .analysis-tell.ai-tell { background: rgba(255, 71, 87, 0.15); border-left: 3px solid #ff4757; }
+        .analysis-tell.real-tell { background: rgba(0, 184, 148, 0.15); border-left: 3px solid #00b894; }
+        .analysis-toggle {
+            display: flex;
+            justify-content: center;
+        }
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: #888;
+            cursor: pointer;
+        }
+        .toggle-label input { cursor: pointer; }
+        .analysis-compare {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 0.8rem;
+        }
+        .compare-btn {
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 20px;
+            color: #fff;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .compare-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .compare-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 500;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .compare-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .compare-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+        .compare-close {
+            background: var(--bg-secondary);
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
+        }
+        .compare-images {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            flex: 1;
+            min-height: 0;
+        }
+        .compare-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .compare-item-label {
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+        }
+        .compare-item-label.ai { background: rgba(255,71,87,0.2); color: #ff4757; }
+        .compare-item-label.real { background: rgba(0,184,148,0.2); color: #00b894; }
+        .compare-item-label.guessed { border: 2px solid #ffd700; }
+        .compare-img-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 0;
+            width: 100%;
+        }
+        .compare-img-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            cursor: zoom-in;
+        }
+        .compare-analysis {
+            margin-top: 0.8rem;
+            padding: 0.8rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+        .compare-analysis h4 {
+            margin-bottom: 0.5rem;
+            color: var(--accent-primary);
+        }
+        .compare-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .compare-mode-toggle {
+            margin-bottom: 0.8rem;
+        }
+        .mode-btn {
+            padding: 0.4rem 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .mode-btn.active {
+            background: var(--accent-primary);
+            color: #000;
+            border-color: var(--accent-primary);
+        }
+        .compare-nav-btn {
+            padding: 0.5rem 1.5rem;
+            background: var(--accent-primary);
+            border: none;
+            border-radius: 20px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 8px;
+            touch-action: none;
+        }
+        .slider-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+        }
+        .slider-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            overflow: hidden;
+            transition: width 0.05s;
+        }
+        .slider-overlay img {
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+        }
+        .slider-handle {
+            position: absolute;
+            top: 0;
+            width: 40px;
+            height: 100%;
+            transform: translateX(-50%);
+            cursor: ew-resize;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .slider-handle::before {
+            content: '';
+            width: 4px;
+            height: 80%;
+            background: #fff;
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        .slider-handle::after {
+            content: '◀ ▶';
+            position: absolute;
+            background: #fff;
+            padding: 0.3rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .selection-meta {
+            margin-top: 0.8rem;
+            padding: 0.9rem;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.12);
+            font-size: 0.82rem;
+            line-height: 1.45;
+            display: none;
+        }
+        .selection-meta strong {
+            color: var(--accent-primary);
+        }
+        .selection-meta a {
+            color: #7ed6ff;
+            word-break: break-all;
+        }
+        .ready-screen {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 2500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .ready-card {
+            width: min(560px, 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.16);
+            background: linear-gradient(145deg, rgba(13,26,43,0.95), rgba(9,17,31,0.96));
+            padding: 1.2rem;
+            text-align: center;
+        }
+        .ready-card h2 {
+            margin-bottom: 0.6rem;
+        }
+        .ready-card p {
+            color: #a0a0a0;
+            margin-bottom: 1rem;
+            font-size: 0.88rem;
+        }
+        .ready-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+        .ready-actions a {
+            padding: 0.65rem 1.15rem;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.18);
+            color: #d4e8ff;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        /* Redesign direction: editorial control-room with amber/cyan signal palette */
+        :root {
+            --bg-primary:
+                radial-gradient(1000px 700px at 8% -14%, rgba(45, 93, 118, 0.58), rgba(45, 93, 118, 0) 58%),
+                radial-gradient(850px 620px at 92% -12%, rgba(151, 77, 29, 0.52), rgba(151, 77, 29, 0) 56%),
+                linear-gradient(158deg, #0d121c 0%, #111924 52%, #0b1119 100%);
+            --bg-secondary: rgba(14, 24, 38, 0.7);
+            --bg-card: rgba(8, 15, 27, 0.82);
+            --text-primary: #f5efdf;
+            --text-secondary: #c1bba8;
+            --accent-primary: #ff9f43;
+            --accent-secondary: #4ed0f6;
+            --accent-tertiary: #ff5d4f;
+            --border-color: rgba(245, 239, 223, 0.16);
+            --success: #5ad8a4;
+            --danger: #ff6b5f;
+            --warning: #ffd166;
+        }
+        body.light {
+            --bg-primary:
+                radial-gradient(900px 650px at 12% -10%, rgba(123, 175, 196, 0.45), rgba(123, 175, 196, 0) 56%),
+                radial-gradient(800px 600px at 90% -18%, rgba(226, 166, 120, 0.48), rgba(226, 166, 120, 0) 56%),
+                linear-gradient(160deg, #ebe4d6 0%, #d9d1c4 52%, #d2c9bb 100%);
+            --bg-secondary: rgba(255, 250, 238, 0.76);
+            --bg-card: rgba(255, 252, 246, 0.84);
+            --text-primary: #1f232d;
+            --text-secondary: #625d51;
+            --border-color: rgba(31, 35, 45, 0.15);
+        }
+        body {
+            font-family: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+            background-attachment: fixed;
+            position: relative;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
+            opacity: 0.2;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .container {
+            max-width: 1080px;
+            position: relative;
+            z-index: 1;
+        }
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.9rem;
+            margin-bottom: 1rem;
+            padding: 0.85rem 0.95rem;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            background: rgba(9, 17, 28, 0.66);
+            backdrop-filter: blur(10px);
+        }
+        .app-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+        .app-links {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+        .app-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 34px;
+        }
+        .quick-play-wrap {
+            margin-bottom: 0.95rem;
+            text-align: center;
+        }
+        header h1,
+        .ready-card h2,
+        .overlay-screen h2,
+        .tutorial-screen h2 {
+            font-family: 'Syne', 'Trebuchet MS', sans-serif;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+        h1 {
+            font-size: clamp(1.9rem, 3.3vw, 3rem);
+            background: linear-gradient(112deg, var(--accent-primary), #ffd37b 44%, var(--accent-secondary));
+            text-shadow: 0 0 34px rgba(255, 161, 87, 0.25);
+        }
+        #playerTitleBadge { font-size: 1.35rem !important; }
+        #playerTitleText {
+            color: var(--text-secondary) !important;
+            letter-spacing: 0.03em;
+        }
+        header a {
+            color: var(--text-primary) !important;
+            background: rgba(11, 20, 33, 0.56) !important;
+            border: 1px solid var(--border-color);
+            border-radius: 999px !important;
+            backdrop-filter: blur(8px);
+        }
+        .theme-toggle {
+            border-radius: 999px;
+            background: rgba(11, 20, 33, 0.7);
+            border-color: var(--border-color);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+        }
+        .quick-play-btn,
+        .btn {
+            border-radius: 999px;
+            background: linear-gradient(105deg, var(--accent-primary), #ffb35d);
+            color: #1b1408;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            box-shadow: 0 10px 24px rgba(255, 159, 67, 0.32);
+        }
+        .quick-play-btn:hover,
+        .btn:hover {
+            box-shadow: 0 12px 28px rgba(255, 159, 67, 0.44);
+        }
+        .mode-btn,
+        .category-btn {
+            border-radius: 999px;
+            background: rgba(9, 19, 31, 0.46);
+            color: var(--text-secondary);
+            border-color: var(--border-color);
+        }
+        .mode-btn.active,
+        .category-btn.active {
+            background: linear-gradient(108deg, var(--accent-secondary), #96ecff);
+            color: #092232;
+            border-color: transparent;
+            box-shadow: 0 8px 20px rgba(78, 208, 246, 0.34);
+        }
+        .game-header {
+            padding: 0.9rem;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            background: var(--bg-card);
+            box-shadow: 0 12px 26px rgba(0, 0, 0, 0.26);
+        }
+        .stat-value {
+            color: var(--accent-primary);
+            font-weight: 700;
+        }
+        .xp-bar {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-color);
+        }
+        .xp-bar-fill {
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+        }
+        .game-area {
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .image-card {
+            border-radius: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 18px 34px rgba(0,0,0,0.28);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        .image-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 24px 38px rgba(0,0,0,0.35);
+        }
+        .image-card.selected {
+            border-color: var(--accent-secondary);
+            box-shadow: 0 0 0 1px rgba(78, 208, 246, 0.4), 0 18px 34px rgba(0,0,0,0.35);
+        }
+        .badge.ai {
+            background: linear-gradient(130deg, var(--accent-tertiary), #ff8a80);
+        }
+        .badge.real {
+            background: linear-gradient(130deg, #7ac8a6, var(--success));
+            color: #062118;
+        }
+        .instructions {
+            margin-top: 1rem;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: rgba(12, 21, 34, 0.48);
+        }
+        .selection-meta {
+            margin-top: 1rem;
+            background: linear-gradient(145deg, rgba(8,17,30,0.8), rgba(17,31,45,0.72));
+            border-color: rgba(78, 208, 246, 0.35);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+        }
+        .selection-meta > div {
+            padding: 0.36rem 0;
+            border-bottom: 1px dashed rgba(255,255,255,0.08);
+        }
+        .selection-meta > div:last-child { border-bottom: 0; }
+        .selection-meta a { color: var(--accent-secondary); }
+        .ready-screen {
+            background: rgba(4, 9, 17, 0.92);
+            backdrop-filter: blur(8px);
+        }
+        .ready-card {
+            border-radius: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: linear-gradient(160deg, rgba(10, 22, 36, 0.94), rgba(15, 28, 45, 0.88));
+            box-shadow: 0 22px 48px rgba(0, 0, 0, 0.45);
+            padding: 1.5rem;
+        }
+        .ready-card p {
+            color: var(--text-secondary);
+            max-width: 46ch;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #scoreStat,
+        #livesContainer,
+        #timerContainer,
+        #gameTimerContainer,
+        #hintBtn {
+            display: none !important;
+        }
+        .powerups {
+            display: none !important;
+        }
+        @media (max-width: 700px) {
+            .container { padding: 0.9rem 0.6rem 5.2rem; }
+            .game-header { padding: 0.75rem; }
+            .instructions { font-size: 0.74rem; }
+            .app-header {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 0.75rem;
+            }
+            .app-links {
+                width: 100%;
+            }
+            .app-link {
+                flex: 1;
+            }
+        }
     </style>
 </head>
 <body>
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
     <div class="container">
-        <header style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:0.8rem;">
+        <header class="app-header">
+            <div class="app-brand">
                 <h1>AI or Not?</h1>
-                <span id="playerTitleBadge" style="font-size:1.2rem;" title="Your rank">🐣</span>
-                <span id="playerTitleText" style="font-size:0.75rem;color:#888;">Newcomer</span>
+                <span id="playerTitleBadge" class="app-rank-badge" title="Your rank">🐣</span>
+                <span id="playerTitleText" class="app-rank-text">Newcomer</span>
             </div>
-            <div style="display:flex;gap:0.5rem;">
-                <a href="/leaderboard.html" style="color:#888;font-size:0.8rem;text-decoration:none;padding:0.3rem 0.8rem;background:rgba(255,255,255,0.05);border-radius:15px;">🏆 Leaderboard</a>
-                <a href="/stats.html" style="color:#888;font-size:0.8rem;text-decoration:none;padding:0.3rem 0.8rem;background:rgba(255,255,255,0.05);border-radius:15px;">📊 Stats</a>
+            <div class="app-links">
+                <a href="/leaderboard.html" class="app-link">🏆 Leaderboard</a>
+                <a href="/stats.html" class="app-link">📊 Stats</a>
             </div>
         </header>
 
-        <div style="text-align:center;margin-bottom:0.8rem;">
+        <div class="quick-play-wrap">
             <button class="quick-play-btn" onclick="quickPlay()">⚡ Quick Play!</button>
         </div>
 
         <div class="mode-selector">
             <button class="mode-btn active" onclick="setMode('practice')">Practice</button>
             <button class="mode-btn daily" onclick="setMode('daily')">Daily</button>
-            <button class="mode-btn timed" onclick="setMode('timed')">Timed (60s)</button>
+            <button class="mode-btn timed" style="display:none" onclick="setMode('timed')">Timed (60s)</button>
             <button class="mode-btn tournament" onclick="setMode('tournament')">Tournament</button>
             <button class="mode-btn endless" onclick="setMode('endless')">Endless</button>
         </div>
-        <div class="tournament-info" id="tournamentInfo" style="display:none">Week <span id="tournamentWeek"></span> • 10 Rounds • Compete for the high score!</div>
-        <div class="endless-info" id="endlessInfo" style="display:none">Level <span id="endlessLevel">1</span> • Timer: <span id="endlessTimer">10</span>s • Streak Multiplier: x<span id="endlessMultiplier">1</span></div>
+        <div class="tournament-info" id="tournamentInfo" style="display:none">Week <span id="tournamentWeek"></span> • 10 Rounds • Complete the challenge.</div>
+        <div class="endless-info" id="endlessInfo" style="display:none">Level <span id="endlessLevel">1</span> • Streak Multiplier: x<span id="endlessMultiplier">1</span><span id="endlessTimer" style="display:none">10</span></div>
 
         <div class="category-selector">
             <span class="category-label">Category:</span>
@@ -401,7 +985,7 @@
 
         <div class="game-header">
             <div class="stats-row">
-                <div class="stat">
+                <div class="stat" id="scoreStat" style="display:none">
                     <div class="stat-value" id="score">0</div>
                     <div class="stat-label">Score</div>
                 </div>
@@ -427,13 +1011,18 @@
                 </div>
             </div>
 
-            <div class="lives" id="livesContainer">
+            <div class="xp-bar-container">
+                <span class="xp-bar-label" id="xpLabel">XP: 0/100</span>
+                <div class="xp-bar"><div class="xp-bar-fill" id="xpFill" style="width:0%"></div></div>
+            </div>
+
+            <div class="lives" id="livesContainer" style="display:none">
                 <span class="heart">❤️</span>
                 <span class="heart">❤️</span>
                 <span class="heart">❤️</span>
             </div>
 
-            <div class="timer-container" id="timerContainer" style="display: none;">
+            <div class="timer-container" id="timerContainer" style="display:none">
                 <svg class="timer-ring" width="50" height="50">
                     <circle class="bg" cx="25" cy="25" r="21"></circle>
                     <circle class="progress" id="timerProgress" cx="25" cy="25" r="21" stroke-dasharray="132" stroke-dashoffset="0"></circle>
@@ -441,7 +1030,7 @@
                 <span class="timer-text" id="timerText">10</span>
             </div>
 
-            <div class="timer-container timer-large" id="gameTimerContainer" style="display: none;">
+            <div class="timer-container timer-large" id="gameTimerContainer" style="display:none">
                 <svg class="timer-ring" width="80" height="80">
                     <circle class="bg" cx="40" cy="40" r="36"></circle>
                     <circle class="progress" id="gameTimerProgress" cx="40" cy="40" r="36" stroke-dasharray="226" stroke-dashoffset="0"></circle>
@@ -450,8 +1039,10 @@
             </div>
 
             <div class="actions">
-                <button class="action-btn hint" id="hintBtn" onclick="useHint()">💡</button>
-                <div class="powerups">
+                <div style="display:none;">
+                    <button class="action-btn hint" id="hintBtn" onclick="useHint()">💡</button>
+                </div>
+                <div class="powerups" style="display:none;">
                     <button class="powerup-btn fifty" id="fiftyBtn" onclick="usePowerup('fifty')" title="Eliminate one wrong option"><span class="icon">½</span></button>
                     <button class="powerup-btn freeze" id="freezeBtn" onclick="usePowerup('freeze')" title="Freeze timer for 5s"><span class="icon">❄️</span></button>
                     <button class="powerup-btn double" id="doubleBtn" onclick="usePowerup('double')" title="2x points next answer"><span class="icon">×2</span></button>
@@ -464,10 +1055,10 @@
         <div class="game-area" id="gameArea">
             <div class="loading"><div class="spinner"></div>Loading...</div>
         </div>
+        <div class="selection-meta" id="selectionMeta"></div>
 
         <p class="instructions">
             <button class="shortcuts-btn" onclick="toggleShortcuts()">⌨️</button>
-            <button class="shortcuts-btn" onclick="toggleTips()">💡 Learn</button>
             • Press <strong>1</strong> / <strong>2</strong> or click • Hover & click <strong>🔍</strong> to zoom
         </p>
     </div>
@@ -480,7 +1071,6 @@
         <div class="shortcut-row"><span class="shortcut-key">→</span> Select right image</div>
         <div class="shortcut-row"><span class="shortcut-key">Enter</span> Submit guess</div>
         <div class="shortcut-row"><span class="shortcut-key">Space</span> Submit guess</div>
-        <div class="shortcut-row"><span class="shortcut-key">H</span> Use hint</div>
         <div class="shortcut-row"><span class="shortcut-key">Esc</span> Close zoom/modal</div>
         <button class="shortcuts-close" onclick="toggleShortcuts()">Got it!</button>
     </div>
@@ -526,7 +1116,7 @@
 
     <div class="zoom-overlay" id="zoomOverlay" onclick="closeZoom(event)">
         <button class="zoom-close" onclick="closeZoom(event)">✕ Close</button>
-        <img id="zoomImage" src="" alt="Zoomed view">
+        <img id="zoomImage" src="" alt="Comparison image">
         <p class="zoom-label">Click anywhere to close or press Esc</p>
     </div>
 
@@ -540,7 +1130,7 @@
         <h2>How to Play</h2>
         <div class="tutorial-step"><span class="num">1</span><span class="text">You'll see <strong>two images</strong> - one is a <strong>real photo</strong>, one is <strong>AI-generated</strong></span></div>
         <div class="tutorial-step"><span class="num">2</span><span class="text">Click or press <strong>1 / 2</strong> to guess which one is AI</span></div>
-        <div class="tutorial-step"><span class="num">3</span><span class="text">Build <strong>streaks</strong> for bonus points • Use <strong>💡 hints</strong> to eliminate wrong answers</span></div>
+        <div class="tutorial-step"><span class="num">3</span><span class="text">Review the generation details after each pick and compare your call to the answer</span></div>
         <div class="tutorial-step"><span class="num">4</span><span class="text">Try <strong>Tournament</strong> mode for weekly competitions</span></div>
         <button class="tutorial-skip" onclick="skipTutorial()">Start Playing</button>
     </div>
@@ -548,7 +1138,6 @@
     <div class="overlay-screen" id="gameOverScreen">
         <h2 class="game-over">Game Over!</h2>
         <div class="final-stats">
-            <div class="final-stat"><div class="final-stat-value" id="finalScore">0</div><div class="final-stat-label">Score</div></div>
             <div class="final-stat"><div class="final-stat-value" id="finalAccuracy">0%</div><div class="final-stat-label">Accuracy</div></div>
             <div class="final-stat"><div class="final-stat-value" id="finalStreak">0</div><div class="final-stat-label">Best Streak</div></div>
         </div>
@@ -557,8 +1146,18 @@
         <button class="btn share" onclick="shareResult()">📤 Share</button>
         <button class="btn" onclick="restartGame()">Play Again</button>
     </div>
+    <div class="ready-screen" id="readyScreen">
+        <div class="ready-card">
+            <h2>Signal Check</h2>
+            <p>Pick the generated image. Every result reveals the generation prompt, model, and the original source record so you can audit your call.</p>
+            <div class="ready-actions">
+                <button class="btn" onclick="startGame()">Start Session</button>
+            </div>
+        </div>
+    </div>
 
     <script>
+        const COMMON_ALT_TEXT = 'Comparison image';
         const TIMER_CIRC = 132;
         const GAME_TIMER_CIRC = 226;
         let mode = 'practice';
@@ -591,9 +1190,18 @@
         let endlessTimerBase = 12;
         let endlessMultiplier = 1;
         let soundEnabled = true;
+        let currentAnalysis = null;
+        let currentRoundMeta = null;
+        let currentRoundImages = null;
+        let showAnalysisMode = false;
         let soundVolume = 0.5;
+        let gameReady = false;
         let achievements = JSON.parse(localStorage.getItem('ai-or-not-achievements') || '{}');
         let stats = JSON.parse(localStorage.getItem('ai-or-not-stats') || '{"played":0,"bestScore":0,"bestStreak":0,"totalCorrect":0,"totalGuesses":0,"achievements":[],"dailyHistory":[]}');
+        let reportGenerationModel = 'Unknown';
+        let metadataLoaded = false;
+        const datasetEntriesBySlot = new Map();
+        const legacyReportEntriesByAiIndex = new Map();
 
         const ALL_ACHIEVEMENTS = [
             { id: 'first_game', name: 'First Steps', desc: 'Complete your first game', icon: '🎮' },
@@ -663,6 +1271,186 @@
             else if (type === 'achievement') navigator.vibrate([50, 50, 50, 50, 100]);
         }
 
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#39;');
+        }
+
+        function formatHumanDate(value) {
+            if (!value) return 'Unknown';
+            try {
+                const d = new Date(value);
+                if (Number.isNaN(d.getTime())) return String(value);
+                return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+            } catch (_) {
+                return String(value);
+            }
+        }
+
+        function normalizeRoundMeta(meta) {
+            return {
+                aiIndex: Number.isInteger(meta?.aiIndex) ? meta.aiIndex : null,
+                prompt: meta?.prompt || 'Prompt unavailable.',
+                generationModel: meta?.generationModel || reportGenerationModel || 'Unknown',
+                realUrl: meta?.realUrl || 'Unknown',
+                realAuthor: meta?.realAuthor || 'Unknown',
+                realDate: formatHumanDate(meta?.realDate),
+                realSource: meta?.realSource || 'Unknown',
+                realTitle: meta?.realTitle || 'Untitled',
+            };
+        }
+
+        function getLastAttemptPrompt(entry) {
+            if (!entry || !Array.isArray(entry.attempts) || entry.attempts.length === 0) {
+                return 'Prompt unavailable for this image (resume report had no attempt history).';
+            }
+            const finalAttempt = entry.attempts[entry.attempts.length - 1];
+            return finalAttempt?.prompt || 'Prompt unavailable.';
+        }
+
+        function datasetEntryToRoundMeta(entry) {
+            if (!entry || typeof entry !== 'object') return null;
+            return normalizeRoundMeta({
+                aiIndex: Number.isInteger(entry.slot) ? entry.slot : null,
+                prompt: entry.generated?.prompt,
+                generationModel: entry.generated?.model,
+                realUrl: entry.real?.source_url || entry.real?.display_url,
+                realAuthor: entry.real?.author,
+                realDate: entry.real?.captured_at,
+                realSource: entry.real?.source_name,
+                realTitle: entry.real?.title,
+            });
+        }
+
+        function pairMetadataToRoundMeta(pair) {
+            if (!pair || typeof pair !== 'object') return null;
+            return normalizeRoundMeta({
+                aiIndex: Number.isInteger(pair.slot) ? pair.slot : null,
+                prompt: pair.generation?.prompt,
+                generationModel: pair.generation?.model,
+                realUrl: pair.real?.sourceUrl,
+                realAuthor: pair.real?.author,
+                realDate: pair.real?.capturedAt,
+                realSource: pair.real?.source,
+                realTitle: pair.real?.title,
+            });
+        }
+
+        async function loadRoundMetadata() {
+            if (metadataLoaded) return;
+            metadataLoaded = true;
+
+            try {
+                const datasetRes = await fetch('/ai-images/dataset.json');
+                if (datasetRes.ok) {
+                    const dataset = await datasetRes.json();
+                    const entries = Array.isArray(dataset?.entries) ? dataset.entries : [];
+                    for (const entry of entries) {
+                        const slot = Number(entry?.slot);
+                        if (!Number.isInteger(slot) || entry?.active === false) continue;
+                        const normalized = datasetEntryToRoundMeta(entry);
+                        if (normalized) datasetEntriesBySlot.set(slot, normalized);
+                    }
+                    const firstModel = entries.find((e) => e?.generated?.model)?.generated?.model;
+                    if (firstModel) reportGenerationModel = firstModel;
+                }
+            } catch (_) {}
+
+            try {
+                const res = await fetch('/ai-images/openrouter-review-report.json');
+                if (!res.ok) return;
+                const report = await res.json();
+                reportGenerationModel = report?.generation_model || reportGenerationModel || 'Unknown';
+                const results = Array.isArray(report?.results) ? report.results : [];
+                for (const entry of results) {
+                    legacyReportEntriesByAiIndex.set(entry.aiIndex, normalizeRoundMeta({
+                        aiIndex: Number.isInteger(entry.aiIndex) ? entry.aiIndex : null,
+                        prompt: getLastAttemptPrompt(entry),
+                        generationModel: report?.generation_model,
+                        realUrl: entry.real,
+                        realAuthor: entry.realAuthor || entry.author,
+                        realDate: entry.realDate || entry.date,
+                        realSource: entry.realSource || entry.source,
+                        realTitle: entry.realTitle || entry.title,
+                    }));
+                }
+            } catch (_) {}
+        }
+
+        async function resolveRoundMeta(data) {
+            await loadRoundMetadata();
+
+            const fromPairMetadata = pairMetadataToRoundMeta(data?.pairMetadata);
+            if (fromPairMetadata) {
+                const fromDataset = Number.isInteger(fromPairMetadata.aiIndex)
+                    ? datasetEntriesBySlot.get(fromPairMetadata.aiIndex)
+                    : null;
+                return normalizeRoundMeta({
+                    ...(fromDataset || {}),
+                    ...fromPairMetadata,
+                });
+            }
+
+            const aiImageUrl = data?.images?.[data.aiPosition]?.url || '';
+            let aiIndex = null;
+            if (typeof aiImageUrl === 'string') {
+                const match = aiImageUrl.match(/\/ai-images\/ai-(\d+)\.jpg/i);
+                if (match) aiIndex = parseInt(match[1], 10);
+            }
+
+            if (Number.isInteger(aiIndex)) {
+                const fromDataset = datasetEntriesBySlot.get(aiIndex);
+                if (fromDataset) return fromDataset;
+
+                const fromLegacy = legacyReportEntriesByAiIndex.get(aiIndex);
+                if (fromLegacy) return fromLegacy;
+            }
+
+            return normalizeRoundMeta({});
+        }
+
+        function showSelectionMeta(guessId, aiPosition) {
+            const metaEl = document.getElementById('selectionMeta');
+            if (!metaEl) return;
+            const pickedLabel = guessId === 0 ? 'Left image' : 'Right image';
+            const correctLabel = aiPosition === 0 ? 'Left image' : 'Right image';
+            const prompt = escapeHtml(currentRoundMeta?.prompt || 'Prompt unavailable.');
+            const model = escapeHtml(currentRoundMeta?.generationModel || 'Unknown');
+            const realUrl = currentRoundMeta?.realUrl || 'Unknown';
+            const realAuthor = escapeHtml(currentRoundMeta?.realAuthor || 'Unknown');
+            const realDate = escapeHtml(currentRoundMeta?.realDate || 'Unknown');
+            const realSource = escapeHtml(currentRoundMeta?.realSource || 'Unknown');
+            const realTitle = escapeHtml(currentRoundMeta?.realTitle || 'Untitled');
+            const safeRealUrl = typeof realUrl === 'string' && /^https?:\/\//i.test(realUrl) ? realUrl : '';
+            const sourceLink = safeRealUrl
+                ? `<a href="${safeRealUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(safeRealUrl)}</a>`
+                : 'Unknown';
+
+            metaEl.innerHTML = `
+                <div><strong>Your pick:</strong> ${pickedLabel}</div>
+                <div><strong>Correct AI image:</strong> ${correctLabel}</div>
+                <div><strong>Generation model:</strong> ${model}</div>
+                <div><strong>Generation prompt:</strong> ${prompt}</div>
+                <div><strong>Original real image:</strong> ${sourceLink}</div>
+                <div><strong>Source:</strong> ${realSource}</div>
+                <div><strong>Title:</strong> ${realTitle}</div>
+                <div><strong>Author:</strong> ${realAuthor} • <strong>Date:</strong> ${realDate}</div>
+            `;
+            metaEl.style.display = 'block';
+        }
+
+        async function startGame() {
+            const ready = document.getElementById('readyScreen');
+            if (ready) ready.style.display = 'none';
+            gameReady = true;
+            await loadRoundMetadata();
+            restartGame();
+        }
+
         async function fetchNewRound() {
             let url = `/api?action=new-round&difficulty=normal`;
             if (mode === 'daily' && dailySeed) url += `&seed=${dailySeed}`;
@@ -705,58 +1493,35 @@
             const title = getPlayerTitle();
             document.getElementById('playerTitleBadge').textContent = title.badge;
             document.getElementById('playerTitleText').textContent = title.title;
+
+            // Update XP progress bar
+            const xp = stats.xp || 0;
+            const level = stats.level || 1;
+            const xpForNext = level * 100;
+            const xpPercent = Math.min((xp / xpForNext) * 100, 100);
+            const xpFill = document.getElementById('xpFill');
+            const xpLabel = document.getElementById('xpLabel');
+            if (xpFill) xpFill.style.width = xpPercent + '%';
+            if (xpLabel) xpLabel.textContent = `XP: ${xp}/${xpForNext}`;
         }
 
         function getTimerDuration() {
-            if (mode === 'easy') return 15;
-            if (mode === 'hard') return 6;
-            if (mode === 'endless') return endlessTimerBase;
-            return 10;
+            return 0;
         }
 
         function startTimer() {
-            const tc = document.getElementById('timerContainer');
-            const tp = document.getElementById('timerProgress');
-            const tt = document.getElementById('timerText');
-            tc.style.display = 'block';
-            const duration = getTimerDuration();
-            timeLeft = duration;
-            tp.classList.remove('warning', 'danger');
             clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                if (timerFrozen) return;
-                timeLeft -= 0.1;
-                const progress = (timeLeft / duration) * TIMER_CIRC;
-                tp.style.strokeDashoffset = TIMER_CIRC - progress;
-                tt.textContent = Math.ceil(timeLeft);
-                tp.classList.toggle('danger', timeLeft <= 2);
-                tp.classList.toggle('warning', timeLeft <= 4 && timeLeft > 2);
-                if (timeLeft <= 0) { clearInterval(timerInterval); handleTimeout(); }
-            }, 100);
         }
         function startGameTimer() {
-            const tc = document.getElementById('gameTimerContainer');
-            const tp = document.getElementById('gameTimerProgress');
-            const tt = document.getElementById('gameTimerText');
-            tc.style.display = 'block';
-            gameTimeLeft = 60;
-            tp.classList.remove('warning', 'danger');
             clearInterval(gameTimerInterval);
-            gameTimerInterval = setInterval(() => {
-                gameTimeLeft -= 0.1;
-                const progress = (gameTimeLeft / 60) * GAME_TIMER_CIRC;
-                tp.style.strokeDashoffset = GAME_TIMER_CIRC - progress;
-                tt.textContent = Math.ceil(gameTimeLeft);
-                tp.classList.toggle('danger', gameTimeLeft <= 10);
-                tp.classList.toggle('warning', gameTimeLeft <= 20 && gameTimeLeft > 10);
-                if (gameTimeLeft <= 0) { clearInterval(gameTimerInterval); endTimedMode(); }
-            }, 100);
         }
         function stopTimers() {
             clearInterval(timerInterval);
             clearInterval(gameTimerInterval);
-            document.getElementById('timerContainer').style.display = 'none';
-            document.getElementById('gameTimerContainer').style.display = 'none';
+            const timerEl = document.getElementById('timerContainer');
+            const gameTimerEl = document.getElementById('gameTimerContainer');
+            if (timerEl) timerEl.style.display = 'none';
+            if (gameTimerEl) gameTimerEl.style.display = 'none';
         }
 
         function handleTimeout() {
@@ -801,6 +1566,197 @@
             fb.textContent = `${label} was AI! 💡 ${tip}`;
             fb.className = 'feedback wrong show';
             setTimeout(() => fb.classList.remove('show'), 2500);
+        }
+
+        function showAnalysisPanel(guessedIndex) {
+            if (!currentAnalysis) return;
+            const guessed = currentAnalysis[guessedIndex];
+            const actual = currentAnalysis[currentAiPosition];
+            const isCorrect = guessedIndex === currentAiPosition;
+            
+            let html = `<div class="analysis-panel">
+                <div class="analysis-header">
+                    <span class="analysis-title">📊 Image Analysis</span>
+                    <button class="analysis-close" onclick="this.parentElement.parentElement.remove()">×</button>
+                </div>
+                <div class="analysis-grid">
+                    <div class="analysis-item">
+                        <span class="analysis-label">Your pick</span>
+                        <span class="analysis-value ${guessed.type === 'ai' ? 'ai-tag' : 'real-tag'}">${guessed.type.toUpperCase()}</span>
+                    </div>
+                    <div class="analysis-item">
+                        <span class="analysis-label">Correct answer</span>
+                        <span class="analysis-value ${actual.type === 'ai' ? 'ai-tag' : 'real-tag'}">${actual.type.toUpperCase()}</span>
+                    </div>
+                    <div class="analysis-item">
+                        <span class="analysis-label">Palette</span>
+                        <span class="analysis-value">${guessed.colorPalette}</span>
+                    </div>
+                    <div class="analysis-item">
+                        <span class="analysis-label">Symmetry</span>
+                        <span class="analysis-value">${guessed.symmetryScore}%</span>
+                    </div>
+                    <div class="analysis-item">
+                        <span class="analysis-label">Texture</span>
+                        <span class="analysis-value">${guessed.textureQuality}</span>
+                    </div>
+                    <div class="analysis-item">
+                        <span class="analysis-label">Lighting</span>
+                        <span class="analysis-value">${guessed.lighting}</span>
+                    </div>
+                    <div class="analysis-item">
+                        <span class="analysis-label">Background</span>
+                        <span class="analysis-value">${guessed.background}</span>
+                    </div>
+                    <div class="analysis-item">
+                        <span class="analysis-label">Patterns</span>
+                        <span class="analysis-value">${guessed.patterns}</span>
+                    </div>
+                </div>
+                <div class="analysis-tell ${actual.type === 'ai' ? 'ai-tell' : 'real-tell'}">
+                    <strong>🔍 Spot the ${actual.type === 'ai' ? 'Fake' : 'Real'}:</strong> ${actual.tells}
+                </div>
+                <div class="analysis-compare">
+                    <button class="compare-btn" onclick="showCompareModal()">🔍 Compare Images</button>
+                </div>
+                <div class="analysis-toggle">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="analysisToggle" ${showAnalysisMode ? 'checked' : ''} onchange="showAnalysisMode = this.checked; localStorage.setItem('ai-or-not-analysis', showAnalysisMode);">
+                        <span>Show Analysis</span>
+                    </label>
+                </div>
+            </div>`;
+            
+            const gameArea = document.getElementById('gameArea');
+            const existing = gameArea.querySelector('.analysis-panel');
+            if (existing) existing.remove();
+            gameArea.insertAdjacentHTML('beforeend', html);
+            
+            document.getElementById('analysisToggle').checked = showAnalysisMode;
+        }
+
+        function showCompareModal() {
+            if (!currentRoundImages || !currentAnalysis) return;
+            
+            const img0 = currentRoundImages[0];
+            const img1 = currentRoundImages[1];
+            const analysis0 = currentAnalysis[0];
+            const analysis1 = currentAnalysis[1];
+            const aiPos = currentAiPosition;
+            
+            const modal = document.createElement('div');
+            modal.className = 'compare-modal';
+            modal.id = 'compareModal';
+            modal.innerHTML = `
+                <div class="compare-header">
+                    <span class="compare-title">🔍 Image Comparison</span>
+                    <button class="compare-close" onclick="closeCompareModal()">×</button>
+                </div>
+                <div class="compare-mode-toggle" style="display:flex;justify-content:center;gap:0.5rem;margin-bottom:0.8rem;">
+                    <button class="mode-btn active" id="modeSideBySide" onclick="switchCompareMode('side')">Side by Side</button>
+                    <button class="mode-btn" id="modeSlider" onclick="switchCompareMode('slider')">Slider</button>
+                </div>
+                <div class="compare-images" id="compareSideBySide">
+                    <div class="compare-item">
+                        <span class="compare-item-label ${analysis0.type === 'ai' ? 'ai' : 'real'} ${0 === aiPos ? 'guessed' : ''}">Image 1 - ${analysis0.type.toUpperCase()}</span>
+                        <div class="compare-img-container">
+                            <img src="${img0.url}" alt="${COMMON_ALT_TEXT}" onclick="openZoom(event)">
+                        </div>
+                        <div class="compare-analysis">
+                            <h4>${analysis0.type === 'ai' ? '🤖 AI-Generated' : '📷 Real Photo'}</h4>
+                            <p><strong>Palette:</strong> ${analysis0.colorPalette}</p>
+                            <p><strong>Texture:</strong> ${analysis0.textureQuality}</p>
+                            <p><strong>Lighting:</strong> ${analysis0.lighting}</p>
+                            <p><strong>Symmetry:</strong> ${analysis0.symmetryScore}%</p>
+                            <p><strong>Patterns:</strong> ${analysis0.patterns}</p>
+                            ${analysis0.type === 'ai' ? `<p style="color:#ff4757;"><strong>Tell:</strong> ${analysis0.tells}</p>` : ''}
+                        </div>
+                    </div>
+                    <div class="compare-item">
+                        <span class="compare-item-label ${analysis1.type === 'ai' ? 'ai' : 'real'} ${1 === aiPos ? 'guessed' : ''}">Image 2 - ${analysis1.type.toUpperCase()}</span>
+                        <div class="compare-img-container">
+                            <img src="${img1.url}" alt="${COMMON_ALT_TEXT}" onclick="openZoom(event)">
+                        </div>
+                        <div class="compare-analysis">
+                            <h4>${analysis1.type === 'ai' ? '🤖 AI-Generated' : '📷 Real Photo'}</h4>
+                            <p><strong>Palette:</strong> ${analysis1.colorPalette}</p>
+                            <p><strong>Texture:</strong> ${analysis1.textureQuality}</p>
+                            <p><strong>Lighting:</strong> ${analysis1.lighting}</p>
+                            <p><strong>Symmetry:</strong> ${analysis1.symmetryScore}%</p>
+                            <p><strong>Patterns:</strong> ${analysis1.patterns}</p>
+                            ${analysis1.type === 'ai' ? `<p style="color:#ff4757;"><strong>Tell:</strong> ${analysis1.tells}</p>` : ''}
+                        </div>
+                    </div>
+                </div>
+                <div class="compare-slider-view" id="compareSliderView" style="display:none;flex:1;position:relative;overflow:hidden;border-radius:12px;">
+                    <div class="slider-container" id="sliderContainer">
+                        <img class="slider-img" src="${img0.url}" alt="${COMMON_ALT_TEXT}" style="width:100%;height:100%;object-fit:contain;">
+                        <div class="slider-overlay" id="sliderOverlay" style="width:50%;">
+                            <img class="slider-img" src="${img1.url}" alt="${COMMON_ALT_TEXT}" style="width:100%;height:100%;object-fit:contain;">
+                        </div>
+                        <div class="slider-handle" id="sliderHandle" style="left:50%;"></div>
+                    </div>
+                    <div style="position:absolute;top:10px;left:10px;padding:0.4rem 0.8rem;background:rgba(0,0,0,0.7);border-radius:8px;font-size:0.8rem;">Image 1</div>
+                    <div style="position:absolute;top:10px;right:10px;padding:0.4rem 0.8rem;background:rgba(0,0,0,0.7);border-radius:8px;font-size:0.8rem;">Image 2</div>
+                </div>
+                <div class="compare-nav">
+                    <button class="compare-nav-btn" onclick="closeCompareModal()">Continue</button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function closeCompareModal() {
+            const modal = document.getElementById('compareModal');
+            if (modal) modal.remove();
+        }
+
+        function switchCompareMode(mode) {
+            const sideBySide = document.getElementById('compareSideBySide');
+            const sliderView = document.getElementById('compareSliderView');
+            const modeSideBtn = document.getElementById('modeSideBySide');
+            const modeSliderBtn = document.getElementById('modeSlider');
+            
+            if (mode === 'side') {
+                sideBySide.style.display = 'grid';
+                sliderView.style.display = 'none';
+                modeSideBtn.classList.add('active');
+                modeSliderBtn.classList.remove('active');
+            } else {
+                sideBySide.style.display = 'none';
+                sliderView.style.display = 'flex';
+                modeSideBtn.classList.remove('active');
+                modeSliderBtn.classList.add('active');
+                initSlider();
+            }
+        }
+
+        function initSlider() {
+            const container = document.getElementById('sliderContainer');
+            const overlay = document.getElementById('sliderOverlay');
+            const handle = document.getElementById('sliderHandle');
+            if (!container || !overlay || !handle) return;
+            
+            let isDragging = false;
+            
+            const updateSlider = (x) => {
+                const rect = container.getBoundingClientRect();
+                let pos = (x - rect.left) / rect.width * 100;
+                pos = Math.max(0, Math.min(100, pos));
+                overlay.style.width = pos + '%';
+                handle.style.left = pos + '%';
+            };
+            
+            handle.addEventListener('mousedown', (e) => { isDragging = true; e.preventDefault(); });
+            handle.addEventListener('touchstart', (e) => { isDragging = true; });
+            
+            document.addEventListener('mousemove', (e) => { if (isDragging) updateSlider(e.clientX); });
+            document.addEventListener('touchmove', (e) => { if (isDragging) updateSlider(e.touches[0].clientX); });
+            document.addEventListener('mouseup', () => { isDragging = false; });
+            document.addEventListener('touchend', () => { isDragging = false; });
+            
+            container.addEventListener('click', (e) => updateSlider(e.clientX));
         }
 
         function showStreakPopup(text) {
@@ -961,7 +1917,7 @@
         }
 
         function quickPlay() {
-            const modes = ['practice', 'daily', 'timed', 'endless'];
+            const modes = ['practice', 'daily', 'endless'];
             const randomMode = modes[Math.floor(Math.random() * modes.length)];
             setMode(randomMode);
         }
@@ -1036,18 +1992,36 @@
             freezeUsed = false;
             doubleUsed = false;
             timerFrozen = false;
-            document.getElementById('hintBtn').classList.remove('used');
-            document.getElementById('fiftyBtn').classList.remove('used');
-            document.getElementById('freezeBtn').classList.remove('used');
-            document.getElementById('doubleBtn').classList.remove('used');
-            document.getElementById('fiftyBtn').disabled = false;
-            document.getElementById('freezeBtn').disabled = false;
-            document.getElementById('doubleBtn').disabled = false;
+            const hintBtn = document.getElementById('hintBtn');
+            const fiftyBtn = document.getElementById('fiftyBtn');
+            const freezeBtn = document.getElementById('freezeBtn');
+            const doubleBtn = document.getElementById('doubleBtn');
+            if (hintBtn) hintBtn.classList.remove('used');
+            if (fiftyBtn) {
+                fiftyBtn.classList.remove('used');
+                fiftyBtn.disabled = false;
+            }
+            if (freezeBtn) {
+                freezeBtn.classList.remove('used');
+                freezeBtn.disabled = false;
+            }
+            if (doubleBtn) {
+                doubleBtn.classList.remove('used');
+                doubleBtn.disabled = false;
+            }
+            const selectionMeta = document.getElementById('selectionMeta');
+            if (selectionMeta) {
+                selectionMeta.style.display = 'none';
+                selectionMeta.innerHTML = '';
+            }
             const gameArea = document.getElementById('gameArea');
             gameArea.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
             const data = await fetchNewRound();
             sessionId = data.sessionId;
             currentAiPosition = data.aiPosition;
+            currentAnalysis = data.analysis || null;
+            currentRoundImages = data.images;
+            currentRoundMeta = await resolveRoundMeta(data);
             selectedCard = 0;
             round++;
             if (mode === 'tournament') tournamentRound++;
@@ -1059,23 +2033,22 @@
             gameArea.innerHTML = `
                 <div class="image-card selected" onclick="guess(0)">
                     <span class="key-hint">1</span>
-                    <img src="${data.images[0].url}" alt="1">
+                    <img src="${data.images[0].url}" alt="${COMMON_ALT_TEXT}">
                     <div class="badge"></div>
                     <button class="zoom-btn" onclick="openZoom(event)" data-url="${data.images[0].url}">🔍</button>
                 </div>
                 <div class="image-card" onclick="guess(1)">
                     <span class="key-hint">2</span>
-                    <img src="${data.images[1].url}" alt="2">
+                    <img src="${data.images[1].url}" alt="${COMMON_ALT_TEXT}">
                     <div class="badge"></div>
                     <button class="zoom-btn" onclick="openZoom(event)" data-url="${data.images[1].url}">🔍</button>
                 </div>`;
             setTimeout(() => document.querySelectorAll('.image-card').forEach((card, i) => setTimeout(() => card.classList.add('visible'), i * 60)), 30);
-            if (mode === 'timed') startGameTimer();
-            else startTimer();
         }
 
         let lastGuessTime = 0;
         async function guess(id) {
+            if (!gameReady) return;
             lastGuessTime = Date.now();
             stopTimers();
             document.querySelectorAll('.image-card').forEach(c => { c.classList.remove('visible', 'selected', 'hinted'); });
@@ -1103,6 +2076,7 @@
                     score += getPoints();
                 }
                 showFeedback(true);
+                if (showAnalysisMode) showAnalysisPanel(id);
                 playSound('correct');
                 triggerHaptic('correct');
                 if (streak === 5) { showStreakPopup('🔥 5 Streak!'); checkAchievement('perfect_round'); }
@@ -1112,21 +2086,15 @@
                 if (mode === 'timed' && round >= 10) checkAchievement('time_trialist');
             } else {
                 streak = 0;
-                if (mode !== 'timed' && mode !== 'tournament') lives--;
                 showFeedback(false);
-                showLearnTip(id, currentAiPosition);
+                if (showAnalysisMode) showAnalysisPanel(id);
                 playSound('wrong');
                 triggerHaptic('wrong');
             }
+            showSelectionMeta(id, result.aiPosition);
             updateDisplay();
             if (mode === 'tournament' && tournamentRound >= TOURNAMENT_ROUNDS) {
                 setTimeout(showTournamentSubmit, 1000);
-            } else if (mode === 'endless' && lives <= 0) {
-                setTimeout(showGameOver, 1000);
-            } else if (mode === 'timed' && lives <= 0) {
-                setTimeout(showGameOver, 1000);
-            } else if (lives <= 0) {
-                setTimeout(showNameScreen, 1000);
             } else {
                 setTimeout(loadNewRound, 2000);
             }
@@ -1147,7 +2115,7 @@
                 body: JSON.stringify({ name, score })
             });
             const data = await res.json();
-            alert(`Tournament Complete!\n\nScore: ${score}\nRank: #${data.rank} of ${data.total}\nWeek: ${data.week}`);
+            alert(`Tournament Complete!\n\nRank: #${data.rank} of ${data.total}\nWeek: ${data.week}`);
             showGameOver();
         }
 
@@ -1167,7 +2135,6 @@
                 checkAchievement('tournament_champion');
             }
             const earnedAchievements = ALL_ACHIEVEMENTS.filter(a => achievements[a.id] && !stats.achievements.includes(a.id));
-            document.getElementById('finalScore').textContent = score;
             document.getElementById('finalAccuracy').textContent = totalGuesses > 0 ? Math.round((correctGuesses / totalGuesses) * 100) + '%' : '0%';
             document.getElementById('finalStreak').textContent = bestStreak;
             document.getElementById('achievementsDisplay').innerHTML = earnedAchievements.length > 0 
@@ -1248,7 +2215,7 @@
             const accuracy = totalGuesses > 0 ? Math.round((correctGuesses / totalGuesses) * 100) : 0;
             const emoji = accuracy === 100 ? '💯' : accuracy >= 80 ? '🔥' : accuracy >= 50 ? '⭐' : '🎮';
             const modeName = mode === 'daily' ? 'Daily Challenge' : mode === 'timed' ? 'Timed Mode' : mode === 'tournament' ? 'Tournament' : 'Practice';
-            const text = `${emoji} AI or Not? - ${modeName}\n\n🎯 Score: ${score}\n📊 Accuracy: ${accuracy}%\n🔥 Streak: ${bestStreak}\n\nCan you beat my score?`;
+            const text = `${emoji} AI or Not? - ${modeName}\n\n📊 Accuracy: ${accuracy}%\n🔥 Streak: ${bestStreak}\n\nCan you beat this run?`;
             if (navigator.share) navigator.share({ text });
             else { navigator.clipboard.writeText(text); alert('Result copied to clipboard!'); }
         }
@@ -1274,20 +2241,23 @@
         }
 
         document.addEventListener('keydown', (e) => {
+            if (!gameReady) return;
             if (document.querySelector('.name-screen.show')) { if (e.key === 'Enter') submitScore(); return; }
             if (document.querySelector('.overlay-screen.show')) return;
             const cards = document.querySelectorAll('.image-card');
             if (e.key === 'ArrowLeft' || e.key === '1') { selectedCard = 0; cards.forEach((c, i) => c.classList.toggle('selected', i === 0)); }
             else if (e.key === 'ArrowRight' || e.key === '2') { selectedCard = 1; cards.forEach((c, i) => c.classList.toggle('selected', i === 1)); }
             else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); guess(selectedCard); }
-            else if (e.key === 'h' || e.key === 'H') useHint();
         });
 
         updateDisplay();
         loadTheme();
         loadSoundPrefs();
         checkTutorial();
-        loadNewRound();
+        const tutorialEl = document.getElementById('tutorialScreen');
+        if (tutorialEl) tutorialEl.style.display = 'none';
+        const readyEl = document.getElementById('readyScreen');
+        if (readyEl) readyEl.style.display = 'flex';
 
         // PWA registration
         if ('serviceWorker' in navigator) {

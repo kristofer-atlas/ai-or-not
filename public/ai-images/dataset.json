@@ -1,0 +1,647 @@
+{
+  "version": 1,
+  "target_size": 100,
+  "updated_at": "2026-03-29T23:39:53.195Z",
+  "entries": [
+    {
+      "id": "legacy-0",
+      "slot": 0,
+      "category": "landscape",
+      "active": true,
+      "created_at": "2026-03-29T23:39:53.195Z",
+      "real": {
+        "display_url": "https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=600&h=600&fit=crop",
+        "source_url": "https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=600&h=600&fit=crop",
+        "source_name": "legacy-unsplash",
+        "author": "Unknown (legacy seed)",
+        "captured_at": null,
+        "title": "Legacy seed image 0",
+        "license": null
+      },
+      "generated": {
+        "path": "/ai-images/ai-0.jpg",
+        "model": "google/gemini-3.1-flash-image-preview",
+        "prompt": "Legacy seed prompt unavailable.",
+        "generated_at": "2026-03-29T23:39:53.195Z",
+        "verifier_model": "google/gemini-3-flash-preview",
+        "verifier_passed": false,
+        "verifier_attempts": 0,
+        "verifier_confidence": 1,
+        "verifier_detection_risk": 1
+      },
+      "pipeline": {
+        "source_kind": "legacy-seed",
+        "source_reason": "Migrated from pre-dataset hardcoded image list.",
+        "attempts": []
+      }
+    },
+    {
+      "id": "legacy-1",
+      "slot": 1,
+      "category": "portrait",
+      "active": true,
+      "created_at": "2026-03-29T23:39:53.195Z",
+      "real": {
+        "display_url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=600&fit=crop",
+        "source_url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=600&fit=crop",
+        "source_name": "legacy-unsplash",
+        "author": "Unknown (legacy seed)",
+        "captured_at": null,
+        "title": "Legacy seed image 1",
+        "license": null
+      },
+      "generated": {
+        "path": "/ai-images/ai-1.jpg",
+        "model": "google/gemini-3.1-flash-image-preview",
+        "prompt": "Legacy seed prompt unavailable.",
+        "generated_at": "2026-03-29T23:39:53.195Z",
+        "verifier_model": "google/gemini-3-flash-preview",
+        "verifier_passed": false,
+        "verifier_attempts": 0,
+        "verifier_confidence": 1,
+        "verifier_detection_risk": 1
+      },
+      "pipeline": {
+        "source_kind": "legacy-seed",
+        "source_reason": "Migrated from pre-dataset hardcoded image list.",
+        "attempts": []
+      }
+    },
+    {
+      "id": "legacy-2",
+      "slot": 2,
+      "category": "landscape",
+      "active": true,
+      "created_at": "2026-03-29T23:39:53.195Z",
+      "real": {
+        "display_url": "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&h=600&fit=crop",
+        "source_url": "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&h=600&fit=crop",
+        "source_name": "legacy-unsplash",
+        "author": "Unknown (legacy seed)",
+        "captured_at": null,
+        "title": "Legacy seed image 2",
+        "license": null
+      },
+      "generated": {
+        "path": "/ai-images/ai-2.jpg",
+        "model": "google/gemini-3.1-flash-image-preview",
+        "prompt": "Legacy seed prompt unavailable.",
+        "generated_at": "2026-03-29T23:39:53.195Z",
+        "verifier_model": "google/gemini-3-flash-preview",
+        "verifier_passed": false,
+        "verifier_attempts": 0,
+        "verifier_confidence": 1,
+        "verifier_detection_risk": 1
+      },
+      "pipeline": {
+        "source_kind": "legacy-seed",
+        "source_reason": "Migrated from pre-dataset hardcoded image list.",
+        "attempts": []
+      }
+    },
+    {
+      "id": "legacy-3",
+      "slot": 3,
+      "category": "nature",
+      "active": true,
+      "created_at": "2026-03-29T23:39:53.195Z",
+      "real": {
+        "display_url": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&h=600&fit=crop",
+        "source_url": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&h=600&fit=crop",
+        "source_name": "legacy-unsplash",
+        "author": "Unknown (legacy seed)",
+        "captured_at": null,
+        "title": "Legacy seed image 3",
+        "license": null
+      },
+      "generated": {
+        "path": "/ai-images/ai-3.jpg",
+        "model": "google/gemini-3.1-flash-image-preview",
+        "prompt": "Legacy seed prompt unavailable.",
+        "generated_at": "2026-03-29T23:39:53.195Z",
+        "verifier_model": "google/gemini-3-flash-preview",
+        "verifier_passed": false,
+        "verifier_attempts": 0,
+        "verifier_confidence": 1,
+        "verifier_detection_risk": 1
+      },
+      "pipeline": {
+        "source_kind": "legacy-seed",
+        "source_reason": "Migrated from pre-dataset hardcoded image list.",
+        "attempts": []
+      }
+    },
+    {
+      "id": "legacy-4",
+      "slot": 4,
+      "category": "animal",
+      "active": true,
+      "created_at": "2026-03-29T23:39:53.195Z",
+      "real": {
+        "display_url": "https://images.unsplash.com/photo-1529778873920-4da4926a72c2?w=600&h=600&fit=crop",
+        "source_url": "https://images.unsplash.com/photo-1529778873920-4da4926a72c2?w=600&h=600&fit=crop",
+        "source_name": "legacy-unsplash",
+        "author": "Unknown (legacy seed)",
+        "captured_at": null,
+        "title": "Legacy seed image 4",
+        "license": null
+      },
+      "generated": {
+        "path": "/ai-images/ai-4.jpg",
+        "model": "google/gemini-3.1-flash-image-preview",
+        "prompt": "Legacy seed prompt unavailable.",
+        "generated_at": "2026-03-29T23:39:53.195Z",
+        "verifier_model": "google/gemini-3-flash-preview",
+        "verifier_passed": false,
+        "verifier_attempts": 0,
+        "verifier_confidence": 1,
+        "verifier_detection_risk": 1
+      },
+      "pipeline": {
+        "source_kind": "legacy-seed",
+        "source_reason": "Migrated from pre-dataset hardcoded image list.",
+        "attempts": []
+      }
+    },
+    {
+      "id": "legacy-5",
+      "slot": 5,
+      "category": "portrait",
+      "active": true,
+      "created_at": "2026-03-29T23:39:53.195Z",
+      "real": {
+        "display_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=600&fit=crop",
+        "source_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=600&fit=crop",
+        "source_name": "legacy-unsplash",
+        "author": "Unknown (legacy seed)",
+        "captured_at": null,
+        "title": "Legacy seed image 5",
+        "license": null
+      },
+      "generated": {
+        "path": "/ai-images/ai-5.jpg",
+        "model": "google/gemini-3.1-flash-image-preview",
+        "prompt": "Legacy seed prompt unavailable.",
+        "generated_at": "2026-03-29T23:39:53.195Z",
+        "verifier_model": "google/gemini-3-flash-preview",
+        "verifier_passed": false,
+        "verifier_attempts": 0,
+        "verifier_confidence": 1,
+        "verifier_detection_risk": 1
+      },
+      "pipeline": {
+        "source_kind": "legacy-seed",
+        "source_reason": "Migrated from pre-dataset hardcoded image list.",
+        "attempts": []
+      }
+    },
+    {
+      "id": "legacy-6",
+      "slot": 6,
+      "category": "landscape",
+      "active": true,
+      "created_at": "2026-03-29T23:39:53.195Z",
+      "real": {
+        "display_url": "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600&h=600&fit=crop",
+        "source_url": "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600&h=600&fit=crop",
+        "source_name": "legacy-unsplash",
+        "author": "Unknown (legacy seed)",
+        "captured_at": null,
+        "title": "Legacy seed image 6",
+        "license": null
+      },
+      "generated": {
+        "path": "/ai-images/ai-6.jpg",
+        "model": "google/gemini-3.1-flash-image-preview",
+        "prompt": "Legacy seed prompt unavailable.",
+        "generated_at": "2026-03-29T23:39:53.195Z",
+        "verifier_model": "google/gemini-3-flash-preview",
+        "verifier_passed": false,
+        "verifier_attempts": 0,
+        "verifier_confidence": 1,
+        "verifier_detection_risk": 1
+      },
+      "pipeline": {
+        "source_kind": "legacy-seed",
+        "source_reason": "Migrated from pre-dataset hardcoded image list.",
+        "attempts": []
+      }
+    },
+    {
+      "id": "legacy-7",
+      "slot": 7,
+      "category": "landscape",
+      "active": true,
+      "created_at": "2026-03-29T23:39:53.195Z",
+      "real": {
+        "display_url": "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=600&h=600&fit=crop",
+        "source_url": "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=600&h=600&fit=crop",
+        "source_name": "legacy-unsplash",
+        "author": "Unknown (legacy seed)",
+        "captured_at": null,
+        "title": "Legacy seed image 7",
+        "license": null
+      },
+      "generated": {
+        "path": "/ai-images/ai-7.jpg",
+        "model": "google/gemini-3.1-flash-image-preview",
+        "prompt": "Legacy seed prompt unavailable.",
+        "generated_at": "2026-03-29T23:39:53.195Z",
+        "verifier_model": "google/gemini-3-flash-preview",
+        "verifier_passed": false,
+        "verifier_attempts": 0,
+        "verifier_confidence": 1,
+        "verifier_detection_risk": 1
+      },
+      "pipeline": {
+        "source_kind": "legacy-seed",
+        "source_reason": "Migrated from pre-dataset hardcoded image list.",
+        "attempts": []
+      }
+    },
+    {
+      "id": "legacy-8",
+      "slot": 8,
+      "category": "architecture",
+      "active": true,
+      "created_at": "2026-03-29T23:39:53.195Z",
+      "real": {
+        "display_url": "https://images.unsplash.com/photo-1516117172878-fd2c41f4a759?w=600&h=600&fit=crop",
+        "source_url": "https://images.unsplash.com/photo-1516117172878-fd2c41f4a759?w=600&h=600&fit=crop",
+        "source_name": "legacy-unsplash",
+        "author": "Unknown (legacy seed)",
+        "captured_at": null,
+        "title": "Legacy seed image 8",
+        "license": null
+      },
+      "generated": {
+        "path": "/ai-images/ai-8.jpg",
+        "model": "google/gemini-3.1-flash-image-preview",
+        "prompt": "Legacy seed prompt unavailable.",
+        "generated_at": "2026-03-29T23:39:53.195Z",
+        "verifier_model": "google/gemini-3-flash-preview",
+        "verifier_passed": false,
+        "verifier_attempts": 0,
+        "verifier_confidence": 1,
+        "verifier_detection_risk": 1
+      },
+      "pipeline": {
+        "source_kind": "legacy-seed",
+        "source_reason": "Migrated from pre-dataset hardcoded image list.",
+        "attempts": []
+      }
+    },
+    {
+      "id": "legacy-9",
+      "slot": 9,
+      "category": "fantasy",
+      "active": true,
+      "created_at": "2026-03-29T23:39:53.195Z",
+      "real": {
+        "display_url": "https://images.unsplash.com/photo-1493238792000-8113da705763?w=600&h=600&fit=crop",
+        "source_url": "https://images.unsplash.com/photo-1493238792000-8113da705763?w=600&h=600&fit=crop",
+        "source_name": "legacy-unsplash",
+        "author": "Unknown (legacy seed)",
+        "captured_at": null,
+        "title": "Legacy seed image 9",
+        "license": null
+      },
+      "generated": {
+        "path": "/ai-images/ai-9.jpg",
+        "model": "google/gemini-3.1-flash-image-preview",
+        "prompt": "Legacy seed prompt unavailable.",
+        "generated_at": "2026-03-29T23:39:53.195Z",
+        "verifier_model": "google/gemini-3-flash-preview",
+        "verifier_passed": false,
+        "verifier_attempts": 0,
+        "verifier_confidence": 1,
+        "verifier_detection_risk": 1
+      },
+      "pipeline": {
+        "source_kind": "legacy-seed",
+        "source_reason": "Migrated from pre-dataset hardcoded image list.",
+        "attempts": []
+      }
+    },
+    {
+      "id": "legacy-10",
+      "slot": 10,
+      "category": "architecture",
+      "active": true,
+      "created_at": "2026-03-29T23:39:53.195Z",
+      "real": {
+        "display_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=600&fit=crop",
+        "source_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=600&fit=crop",
+        "source_name": "legacy-unsplash",
+        "author": "Unknown (legacy seed)",
+        "captured_at": null,
+        "title": "Legacy seed image 10",
+        "license": null
+      },
+      "generated": {
+        "path": "/ai-images/ai-10.jpg",
+        "model": "google/gemini-3.1-flash-image-preview",
+        "prompt": "Legacy seed prompt unavailable.",
+        "generated_at": "2026-03-29T23:39:53.195Z",
+        "verifier_model": "google/gemini-3-flash-preview",
+        "verifier_passed": false,
+        "verifier_attempts": 0,
+        "verifier_confidence": 1,
+        "verifier_detection_risk": 1
+      },
+      "pipeline": {
+        "source_kind": "legacy-seed",
+        "source_reason": "Migrated from pre-dataset hardcoded image list.",
+        "attempts": []
+      }
+    },
+    {
+      "id": "legacy-11",
+      "slot": 11,
+      "category": "fantasy",
+      "active": true,
+      "created_at": "2026-03-29T23:39:53.195Z",
+      "real": {
+        "display_url": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&h=600&fit=crop",
+        "source_url": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&h=600&fit=crop",
+        "source_name": "legacy-unsplash",
+        "author": "Unknown (legacy seed)",
+        "captured_at": null,
+        "title": "Legacy seed image 11",
+        "license": null
+      },
+      "generated": {
+        "path": "/ai-images/ai-11.jpg",
+        "model": "google/gemini-3.1-flash-image-preview",
+        "prompt": "Legacy seed prompt unavailable.",
+        "generated_at": "2026-03-29T23:39:53.195Z",
+        "verifier_model": "google/gemini-3-flash-preview",
+        "verifier_passed": false,
+        "verifier_attempts": 0,
+        "verifier_confidence": 1,
+        "verifier_detection_risk": 1
+      },
+      "pipeline": {
+        "source_kind": "legacy-seed",
+        "source_reason": "Migrated from pre-dataset hardcoded image list.",
+        "attempts": []
+      }
+    },
+    {
+      "id": "legacy-12",
+      "slot": 12,
+      "category": "nature",
+      "active": true,
+      "created_at": "2026-03-29T23:39:53.195Z",
+      "real": {
+        "display_url": "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=600&h=600&fit=crop",
+        "source_url": "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=600&h=600&fit=crop",
+        "source_name": "legacy-unsplash",
+        "author": "Unknown (legacy seed)",
+        "captured_at": null,
+        "title": "Legacy seed image 12",
+        "license": null
+      },
+      "generated": {
+        "path": "/ai-images/ai-12.jpg",
+        "model": "google/gemini-3.1-flash-image-preview",
+        "prompt": "Legacy seed prompt unavailable.",
+        "generated_at": "2026-03-29T23:39:53.195Z",
+        "verifier_model": "google/gemini-3-flash-preview",
+        "verifier_passed": false,
+        "verifier_attempts": 0,
+        "verifier_confidence": 1,
+        "verifier_detection_risk": 1
+      },
+      "pipeline": {
+        "source_kind": "legacy-seed",
+        "source_reason": "Migrated from pre-dataset hardcoded image list.",
+        "attempts": []
+      }
+    },
+    {
+      "id": "legacy-13",
+      "slot": 13,
+      "category": "landscape",
+      "active": true,
+      "created_at": "2026-03-29T23:39:53.195Z",
+      "real": {
+        "display_url": "https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=600&h=600&fit=crop",
+        "source_url": "https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=600&h=600&fit=crop",
+        "source_name": "legacy-unsplash",
+        "author": "Unknown (legacy seed)",
+        "captured_at": null,
+        "title": "Legacy seed image 13",
+        "license": null
+      },
+      "generated": {
+        "path": "/ai-images/ai-13.jpg",
+        "model": "google/gemini-3.1-flash-image-preview",
+        "prompt": "Legacy seed prompt unavailable.",
+        "generated_at": "2026-03-29T23:39:53.195Z",
+        "verifier_model": "google/gemini-3-flash-preview",
+        "verifier_passed": false,
+        "verifier_attempts": 0,
+        "verifier_confidence": 1,
+        "verifier_detection_risk": 1
+      },
+      "pipeline": {
+        "source_kind": "legacy-seed",
+        "source_reason": "Migrated from pre-dataset hardcoded image list.",
+        "attempts": []
+      }
+    },
+    {
+      "id": "legacy-14",
+      "slot": 14,
+      "category": "fantasy",
+      "active": true,
+      "created_at": "2026-03-29T23:39:53.195Z",
+      "real": {
+        "display_url": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&h=600&fit=crop",
+        "source_url": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&h=600&fit=crop",
+        "source_name": "legacy-unsplash",
+        "author": "Unknown (legacy seed)",
+        "captured_at": null,
+        "title": "Legacy seed image 14",
+        "license": null
+      },
+      "generated": {
+        "path": "/ai-images/ai-14.jpg",
+        "model": "google/gemini-3.1-flash-image-preview",
+        "prompt": "Legacy seed prompt unavailable.",
+        "generated_at": "2026-03-29T23:39:53.195Z",
+        "verifier_model": "google/gemini-3-flash-preview",
+        "verifier_passed": false,
+        "verifier_attempts": 0,
+        "verifier_confidence": 1,
+        "verifier_detection_risk": 1
+      },
+      "pipeline": {
+        "source_kind": "legacy-seed",
+        "source_reason": "Migrated from pre-dataset hardcoded image list.",
+        "attempts": []
+      }
+    },
+    {
+      "id": "legacy-15",
+      "slot": 15,
+      "category": "fantasy",
+      "active": true,
+      "created_at": "2026-03-29T23:39:53.195Z",
+      "real": {
+        "display_url": "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&h=600&fit=crop",
+        "source_url": "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&h=600&fit=crop",
+        "source_name": "legacy-unsplash",
+        "author": "Unknown (legacy seed)",
+        "captured_at": null,
+        "title": "Legacy seed image 15",
+        "license": null
+      },
+      "generated": {
+        "path": "/ai-images/ai-15.jpg",
+        "model": "google/gemini-3.1-flash-image-preview",
+        "prompt": "Legacy seed prompt unavailable.",
+        "generated_at": "2026-03-29T23:39:53.195Z",
+        "verifier_model": "google/gemini-3-flash-preview",
+        "verifier_passed": false,
+        "verifier_attempts": 0,
+        "verifier_confidence": 1,
+        "verifier_detection_risk": 1
+      },
+      "pipeline": {
+        "source_kind": "legacy-seed",
+        "source_reason": "Migrated from pre-dataset hardcoded image list.",
+        "attempts": []
+      }
+    },
+    {
+      "id": "legacy-16",
+      "slot": 16,
+      "category": "fantasy",
+      "active": true,
+      "created_at": "2026-03-29T23:39:53.195Z",
+      "real": {
+        "display_url": "https://images.unsplash.com/photo-1465146633011-14f860dc2c2c?w=600&h=600&fit=crop",
+        "source_url": "https://images.unsplash.com/photo-1465146633011-14f860dc2c2c?w=600&h=600&fit=crop",
+        "source_name": "legacy-unsplash",
+        "author": "Unknown (legacy seed)",
+        "captured_at": null,
+        "title": "Legacy seed image 16",
+        "license": null
+      },
+      "generated": {
+        "path": "/ai-images/ai-16.jpg",
+        "model": "google/gemini-3.1-flash-image-preview",
+        "prompt": "Legacy seed prompt unavailable.",
+        "generated_at": "2026-03-29T23:39:53.195Z",
+        "verifier_model": "google/gemini-3-flash-preview",
+        "verifier_passed": false,
+        "verifier_attempts": 0,
+        "verifier_confidence": 1,
+        "verifier_detection_risk": 1
+      },
+      "pipeline": {
+        "source_kind": "legacy-seed",
+        "source_reason": "Migrated from pre-dataset hardcoded image list.",
+        "attempts": []
+      }
+    },
+    {
+      "id": "legacy-17",
+      "slot": 17,
+      "category": "fantasy",
+      "active": true,
+      "created_at": "2026-03-29T23:39:53.195Z",
+      "real": {
+        "display_url": "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=600&h=600&fit=crop",
+        "source_url": "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=600&h=600&fit=crop",
+        "source_name": "legacy-unsplash",
+        "author": "Unknown (legacy seed)",
+        "captured_at": null,
+        "title": "Legacy seed image 17",
+        "license": null
+      },
+      "generated": {
+        "path": "/ai-images/ai-17.jpg",
+        "model": "google/gemini-3.1-flash-image-preview",
+        "prompt": "Legacy seed prompt unavailable.",
+        "generated_at": "2026-03-29T23:39:53.195Z",
+        "verifier_model": "google/gemini-3-flash-preview",
+        "verifier_passed": false,
+        "verifier_attempts": 0,
+        "verifier_confidence": 1,
+        "verifier_detection_risk": 1
+      },
+      "pipeline": {
+        "source_kind": "legacy-seed",
+        "source_reason": "Migrated from pre-dataset hardcoded image list.",
+        "attempts": []
+      }
+    },
+    {
+      "id": "legacy-18",
+      "slot": 18,
+      "category": "fantasy",
+      "active": true,
+      "created_at": "2026-03-29T23:39:53.195Z",
+      "real": {
+        "display_url": "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600&h=600&fit=crop",
+        "source_url": "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600&h=600&fit=crop",
+        "source_name": "legacy-unsplash",
+        "author": "Unknown (legacy seed)",
+        "captured_at": null,
+        "title": "Legacy seed image 18",
+        "license": null
+      },
+      "generated": {
+        "path": "/ai-images/ai-18.jpg",
+        "model": "google/gemini-3.1-flash-image-preview",
+        "prompt": "Legacy seed prompt unavailable.",
+        "generated_at": "2026-03-29T23:39:53.195Z",
+        "verifier_model": "google/gemini-3-flash-preview",
+        "verifier_passed": false,
+        "verifier_attempts": 0,
+        "verifier_confidence": 1,
+        "verifier_detection_risk": 1
+      },
+      "pipeline": {
+        "source_kind": "legacy-seed",
+        "source_reason": "Migrated from pre-dataset hardcoded image list.",
+        "attempts": []
+      }
+    },
+    {
+      "id": "legacy-19",
+      "slot": 19,
+      "category": "fantasy",
+      "active": true,
+      "created_at": "2026-03-29T23:39:53.195Z",
+      "real": {
+        "display_url": "https://images.unsplash.com/photo-1494500764479-0c8f2919a3d8?w=600&h=600&fit=crop",
+        "source_url": "https://images.unsplash.com/photo-1494500764479-0c8f2919a3d8?w=600&h=600&fit=crop",
+        "source_name": "legacy-unsplash",
+        "author": "Unknown (legacy seed)",
+        "captured_at": null,
+        "title": "Legacy seed image 19",
+        "license": null
+      },
+      "generated": {
+        "path": "/ai-images/ai-19.jpg",
+        "model": "google/gemini-3.1-flash-image-preview",
+        "prompt": "Legacy seed prompt unavailable.",
+        "generated_at": "2026-03-29T23:39:53.195Z",
+        "verifier_model": "google/gemini-3-flash-preview",
+        "verifier_passed": false,
+        "verifier_attempts": 0,
+        "verifier_confidence": 1,
+        "verifier_detection_risk": 1
+      },
+      "pipeline": {
+        "source_kind": "legacy-seed",
+        "source_reason": "Migrated from pre-dataset hardcoded image list.",
+        "attempts": []
+      }
+    }
+  ]
+}

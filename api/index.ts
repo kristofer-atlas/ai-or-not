@@ -2,36 +2,71 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { readFileSync } from "fs";
 import { join } from "path";
 
-interface ImageSet {
-  real: string;
-  aiIndex: number;
+interface GameImageSet {
+  id: string;
+  slot: number;
   category: string;
+  realDisplayUrl: string;
+  realSourceUrl: string;
+  realAuthor: string;
+  realCapturedAt: string | null;
+  realSourceName: string;
+  realTitle: string | null;
+  aiPath: string;
+  generationModel: string;
+  generationPrompt: string;
+  generatedAt: string | null;
 }
 
-const imageSets: ImageSet[] = [
-  { real: "https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=600&h=600&fit=crop", aiIndex: 0, category: "landscape" },
-  { real: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=600&fit=crop", aiIndex: 1, category: "portrait" },
-  { real: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&h=600&fit=crop", aiIndex: 2, category: "landscape" },
-  { real: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&h=600&fit=crop", aiIndex: 3, category: "nature" },
-  { real: "https://images.unsplash.com/photo-1529778873920-4da4926a72c2?w=600&h=600&fit=crop", aiIndex: 4, category: "animal" },
-  { real: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=600&fit=crop", aiIndex: 5, category: "portrait" },
-  { real: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600&h=600&fit=crop", aiIndex: 6, category: "landscape" },
-  { real: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=600&h=600&fit=crop", aiIndex: 7, category: "landscape" },
-  { real: "https://images.unsplash.com/photo-1516117172878-fd2c41f4a759?w=600&h=600&fit=crop", aiIndex: 8, category: "architecture" },
-  { real: "https://images.unsplash.com/photo-1493238792000-8113da705763?w=600&h=600&fit=crop", aiIndex: 9, category: "fantasy" },
-  { real: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=600&fit=crop", aiIndex: 10, category: "architecture" },
-  { real: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&h=600&fit=crop", aiIndex: 11, category: "fantasy" },
-  { real: "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=600&h=600&fit=crop", aiIndex: 12, category: "nature" },
-  { real: "https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=600&h=600&fit=crop", aiIndex: 13, category: "landscape" },
-  { real: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&h=600&fit=crop", aiIndex: 14, category: "fantasy" },
-  { real: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&h=600&fit=crop", aiIndex: 15, category: "fantasy" },
-  { real: "https://images.unsplash.com/photo-1465146633011-14f860dc2c2c?w=600&h=600&fit=crop", aiIndex: 16, category: "fantasy" },
-  { real: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=600&h=600&fit=crop", aiIndex: 17, category: "fantasy" },
-  { real: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600&h=600&fit=crop", aiIndex: 18, category: "fantasy" },
-  { real: "https://images.unsplash.com/photo-1494500764479-0c8f2919a3d8?w=600&h=600&fit=crop", aiIndex: 19, category: "fantasy" },
-];
+interface DatasetEntry {
+  id?: unknown;
+  slot?: unknown;
+  category?: unknown;
+  active?: unknown;
+  real?: {
+    display_url?: unknown;
+    source_url?: unknown;
+    author?: unknown;
+    captured_at?: unknown;
+    source_name?: unknown;
+    title?: unknown;
+  };
+  generated?: {
+    path?: unknown;
+    model?: unknown;
+    prompt?: unknown;
+    generated_at?: unknown;
+  };
+}
 
-const categories = ["landscape", "portrait", "animal", "nature", "architecture", "fantasy"];
+interface DatasetFile {
+  entries?: unknown;
+}
+
+const DATASET_PATH = join(process.cwd(), "public", "ai-images", "dataset.json");
+
+const LEGACY_IMAGE_SETS: GameImageSet[] = [
+  { id: "legacy-0", slot: 0, category: "landscape", realDisplayUrl: "https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=600&h=600&fit=crop", realSourceUrl: "https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=600&h=600&fit=crop", realAuthor: "Unknown (legacy seed)", realCapturedAt: null, realSourceName: "legacy-unsplash", realTitle: "Legacy seed image 0", aiPath: "/ai-images/ai-0.jpg", generationModel: "legacy-unknown", generationPrompt: "Legacy seed prompt unavailable.", generatedAt: null },
+  { id: "legacy-1", slot: 1, category: "portrait", realDisplayUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=600&fit=crop", realSourceUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=600&fit=crop", realAuthor: "Unknown (legacy seed)", realCapturedAt: null, realSourceName: "legacy-unsplash", realTitle: "Legacy seed image 1", aiPath: "/ai-images/ai-1.jpg", generationModel: "legacy-unknown", generationPrompt: "Legacy seed prompt unavailable.", generatedAt: null },
+  { id: "legacy-2", slot: 2, category: "landscape", realDisplayUrl: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&h=600&fit=crop", realSourceUrl: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&h=600&fit=crop", realAuthor: "Unknown (legacy seed)", realCapturedAt: null, realSourceName: "legacy-unsplash", realTitle: "Legacy seed image 2", aiPath: "/ai-images/ai-2.jpg", generationModel: "legacy-unknown", generationPrompt: "Legacy seed prompt unavailable.", generatedAt: null },
+  { id: "legacy-3", slot: 3, category: "nature", realDisplayUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&h=600&fit=crop", realSourceUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&h=600&fit=crop", realAuthor: "Unknown (legacy seed)", realCapturedAt: null, realSourceName: "legacy-unsplash", realTitle: "Legacy seed image 3", aiPath: "/ai-images/ai-3.jpg", generationModel: "legacy-unknown", generationPrompt: "Legacy seed prompt unavailable.", generatedAt: null },
+  { id: "legacy-4", slot: 4, category: "animal", realDisplayUrl: "https://images.unsplash.com/photo-1529778873920-4da4926a72c2?w=600&h=600&fit=crop", realSourceUrl: "https://images.unsplash.com/photo-1529778873920-4da4926a72c2?w=600&h=600&fit=crop", realAuthor: "Unknown (legacy seed)", realCapturedAt: null, realSourceName: "legacy-unsplash", realTitle: "Legacy seed image 4", aiPath: "/ai-images/ai-4.jpg", generationModel: "legacy-unknown", generationPrompt: "Legacy seed prompt unavailable.", generatedAt: null },
+  { id: "legacy-5", slot: 5, category: "portrait", realDisplayUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=600&fit=crop", realSourceUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=600&fit=crop", realAuthor: "Unknown (legacy seed)", realCapturedAt: null, realSourceName: "legacy-unsplash", realTitle: "Legacy seed image 5", aiPath: "/ai-images/ai-5.jpg", generationModel: "legacy-unknown", generationPrompt: "Legacy seed prompt unavailable.", generatedAt: null },
+  { id: "legacy-6", slot: 6, category: "landscape", realDisplayUrl: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600&h=600&fit=crop", realSourceUrl: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600&h=600&fit=crop", realAuthor: "Unknown (legacy seed)", realCapturedAt: null, realSourceName: "legacy-unsplash", realTitle: "Legacy seed image 6", aiPath: "/ai-images/ai-6.jpg", generationModel: "legacy-unknown", generationPrompt: "Legacy seed prompt unavailable.", generatedAt: null },
+  { id: "legacy-7", slot: 7, category: "landscape", realDisplayUrl: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=600&h=600&fit=crop", realSourceUrl: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=600&h=600&fit=crop", realAuthor: "Unknown (legacy seed)", realCapturedAt: null, realSourceName: "legacy-unsplash", realTitle: "Legacy seed image 7", aiPath: "/ai-images/ai-7.jpg", generationModel: "legacy-unknown", generationPrompt: "Legacy seed prompt unavailable.", generatedAt: null },
+  { id: "legacy-8", slot: 8, category: "architecture", realDisplayUrl: "https://images.unsplash.com/photo-1516117172878-fd2c41f4a759?w=600&h=600&fit=crop", realSourceUrl: "https://images.unsplash.com/photo-1516117172878-fd2c41f4a759?w=600&h=600&fit=crop", realAuthor: "Unknown (legacy seed)", realCapturedAt: null, realSourceName: "legacy-unsplash", realTitle: "Legacy seed image 8", aiPath: "/ai-images/ai-8.jpg", generationModel: "legacy-unknown", generationPrompt: "Legacy seed prompt unavailable.", generatedAt: null },
+  { id: "legacy-9", slot: 9, category: "fantasy", realDisplayUrl: "https://images.unsplash.com/photo-1493238792000-8113da705763?w=600&h=600&fit=crop", realSourceUrl: "https://images.unsplash.com/photo-1493238792000-8113da705763?w=600&h=600&fit=crop", realAuthor: "Unknown (legacy seed)", realCapturedAt: null, realSourceName: "legacy-unsplash", realTitle: "Legacy seed image 9", aiPath: "/ai-images/ai-9.jpg", generationModel: "legacy-unknown", generationPrompt: "Legacy seed prompt unavailable.", generatedAt: null },
+  { id: "legacy-10", slot: 10, category: "architecture", realDisplayUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=600&fit=crop", realSourceUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=600&fit=crop", realAuthor: "Unknown (legacy seed)", realCapturedAt: null, realSourceName: "legacy-unsplash", realTitle: "Legacy seed image 10", aiPath: "/ai-images/ai-10.jpg", generationModel: "legacy-unknown", generationPrompt: "Legacy seed prompt unavailable.", generatedAt: null },
+  { id: "legacy-11", slot: 11, category: "fantasy", realDisplayUrl: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&h=600&fit=crop", realSourceUrl: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&h=600&fit=crop", realAuthor: "Unknown (legacy seed)", realCapturedAt: null, realSourceName: "legacy-unsplash", realTitle: "Legacy seed image 11", aiPath: "/ai-images/ai-11.jpg", generationModel: "legacy-unknown", generationPrompt: "Legacy seed prompt unavailable.", generatedAt: null },
+  { id: "legacy-12", slot: 12, category: "nature", realDisplayUrl: "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=600&h=600&fit=crop", realSourceUrl: "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=600&h=600&fit=crop", realAuthor: "Unknown (legacy seed)", realCapturedAt: null, realSourceName: "legacy-unsplash", realTitle: "Legacy seed image 12", aiPath: "/ai-images/ai-12.jpg", generationModel: "legacy-unknown", generationPrompt: "Legacy seed prompt unavailable.", generatedAt: null },
+  { id: "legacy-13", slot: 13, category: "landscape", realDisplayUrl: "https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=600&h=600&fit=crop", realSourceUrl: "https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=600&h=600&fit=crop", realAuthor: "Unknown (legacy seed)", realCapturedAt: null, realSourceName: "legacy-unsplash", realTitle: "Legacy seed image 13", aiPath: "/ai-images/ai-13.jpg", generationModel: "legacy-unknown", generationPrompt: "Legacy seed prompt unavailable.", generatedAt: null },
+  { id: "legacy-14", slot: 14, category: "fantasy", realDisplayUrl: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&h=600&fit=crop", realSourceUrl: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&h=600&fit=crop", realAuthor: "Unknown (legacy seed)", realCapturedAt: null, realSourceName: "legacy-unsplash", realTitle: "Legacy seed image 14", aiPath: "/ai-images/ai-14.jpg", generationModel: "legacy-unknown", generationPrompt: "Legacy seed prompt unavailable.", generatedAt: null },
+  { id: "legacy-15", slot: 15, category: "fantasy", realDisplayUrl: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&h=600&fit=crop", realSourceUrl: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&h=600&fit=crop", realAuthor: "Unknown (legacy seed)", realCapturedAt: null, realSourceName: "legacy-unsplash", realTitle: "Legacy seed image 15", aiPath: "/ai-images/ai-15.jpg", generationModel: "legacy-unknown", generationPrompt: "Legacy seed prompt unavailable.", generatedAt: null },
+  { id: "legacy-16", slot: 16, category: "fantasy", realDisplayUrl: "https://images.unsplash.com/photo-1465146633011-14f860dc2c2c?w=600&h=600&fit=crop", realSourceUrl: "https://images.unsplash.com/photo-1465146633011-14f860dc2c2c?w=600&h=600&fit=crop", realAuthor: "Unknown (legacy seed)", realCapturedAt: null, realSourceName: "legacy-unsplash", realTitle: "Legacy seed image 16", aiPath: "/ai-images/ai-16.jpg", generationModel: "legacy-unknown", generationPrompt: "Legacy seed prompt unavailable.", generatedAt: null },
+  { id: "legacy-17", slot: 17, category: "fantasy", realDisplayUrl: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=600&h=600&fit=crop", realSourceUrl: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=600&h=600&fit=crop", realAuthor: "Unknown (legacy seed)", realCapturedAt: null, realSourceName: "legacy-unsplash", realTitle: "Legacy seed image 17", aiPath: "/ai-images/ai-17.jpg", generationModel: "legacy-unknown", generationPrompt: "Legacy seed prompt unavailable.", generatedAt: null },
+  { id: "legacy-18", slot: 18, category: "fantasy", realDisplayUrl: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600&h=600&fit=crop", realSourceUrl: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600&h=600&fit=crop", realAuthor: "Unknown (legacy seed)", realCapturedAt: null, realSourceName: "legacy-unsplash", realTitle: "Legacy seed image 18", aiPath: "/ai-images/ai-18.jpg", generationModel: "legacy-unknown", generationPrompt: "Legacy seed prompt unavailable.", generatedAt: null },
+  { id: "legacy-19", slot: 19, category: "fantasy", realDisplayUrl: "https://images.unsplash.com/photo-1494500764479-0c8f2919a3d8?w=600&h=600&fit=crop", realSourceUrl: "https://images.unsplash.com/photo-1494500764479-0c8f2919a3d8?w=600&h=600&fit=crop", realAuthor: "Unknown (legacy seed)", realCapturedAt: null, realSourceName: "legacy-unsplash", realTitle: "Legacy seed image 19", aiPath: "/ai-images/ai-19.jpg", generationModel: "legacy-unknown", generationPrompt: "Legacy seed prompt unavailable.", generatedAt: null },
+];
 
 interface LeaderboardEntry { name: string; score: number; difficulty: string; date: string }
 interface TournamentEntry { name: string; score: number; week: string; date: string }
@@ -52,6 +87,71 @@ function getWeekSeed(): string {
 
 const sessions = new Map<string, Session>();
 
+function toOptionalString(value: unknown): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const normalized = value.trim();
+  return normalized.length ? normalized : null;
+}
+
+function toDatasetSet(entry: DatasetEntry): GameImageSet | null {
+  if (entry.active === false) {
+    return null;
+  }
+  const slot = typeof entry.slot === "number" ? entry.slot : null;
+  if (slot === null || !Number.isFinite(slot) || slot < 0) {
+    return null;
+  }
+
+  const category = toOptionalString(entry.category)?.toLowerCase() ?? "uncategorized";
+  const realDisplayUrl = toOptionalString(entry.real?.display_url);
+  const aiPath = toOptionalString(entry.generated?.path);
+  if (!realDisplayUrl || !aiPath) {
+    return null;
+  }
+
+  return {
+    id: toOptionalString(entry.id) ?? `dataset-${slot}`,
+    slot,
+    category,
+    realDisplayUrl,
+    realSourceUrl: toOptionalString(entry.real?.source_url) ?? realDisplayUrl,
+    realAuthor: toOptionalString(entry.real?.author) ?? "Unknown",
+    realCapturedAt: toOptionalString(entry.real?.captured_at),
+    realSourceName: toOptionalString(entry.real?.source_name) ?? "unknown-source",
+    realTitle: toOptionalString(entry.real?.title),
+    aiPath,
+    generationModel: toOptionalString(entry.generated?.model) ?? "unknown-model",
+    generationPrompt: toOptionalString(entry.generated?.prompt) ?? "Prompt unavailable",
+    generatedAt: toOptionalString(entry.generated?.generated_at),
+  };
+}
+
+function loadImageSets(): GameImageSet[] {
+  try {
+    const raw = readFileSync(DATASET_PATH, "utf8");
+    const parsed = JSON.parse(raw) as DatasetFile;
+    if (!Array.isArray(parsed.entries)) {
+      return LEGACY_IMAGE_SETS;
+    }
+    const fromDataset = parsed.entries
+      .map((entry) => toDatasetSet(entry as DatasetEntry))
+      .filter((entry): entry is GameImageSet => Boolean(entry))
+      .sort((a, b) => a.slot - b.slot);
+    if (fromDataset.length) {
+      return fromDataset;
+    }
+  } catch {
+    // Fallback for first deploys before dataset.json exists.
+  }
+  return LEGACY_IMAGE_SETS;
+}
+
+function listCategories(imageSets: GameImageSet[]): string[] {
+  return [...new Set(imageSets.map((set) => set.category))].sort();
+}
+
 async function fetchImageAsDataUrl(url: string): Promise<string> {
   if (url.startsWith("/")) {
     const buffer = readFileSync(join(process.cwd(), "public", url));
@@ -69,6 +169,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const action = url.searchParams.get("action");
 
   if (action === "new-round" && req.method === "GET") {
+    const imageSets = loadImageSets();
+    const categories = listCategories(imageSets);
     const difficulty = url.searchParams.get("difficulty") || "normal";
     const category = url.searchParams.get("category");
     const seed = url.searchParams.get("seed");
@@ -103,11 +205,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const set = availableSets[setIndex]!;
 
     const [img0, img1] = await Promise.all([
-      fetchImageAsDataUrl(set.real),
-      fetchImageAsDataUrl(`/ai-images/ai-${set.aiIndex}.jpg`),
+      fetchImageAsDataUrl(set.realDisplayUrl),
+      fetchImageAsDataUrl(set.aiPath),
     ]);
 
     sessions.set(sessionId, { aiPosition, difficulty, startTime: Date.now() });
+
+    const analysisData = [
+      generateAnalysis(set.slot, aiPosition === 0),
+      generateAnalysis(set.slot, aiPosition === 1),
+    ];
 
     return res.status(200).json({
       sessionId,
@@ -115,13 +222,75 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         { url: aiPosition === 0 ? img1 : img0, id: 0 },
         { url: aiPosition === 1 ? img1 : img0, id: 1 },
       ],
+      analysis: analysisData,
       aiPosition,
       difficulty,
       category: set.category,
+      pairMetadata: {
+        datasetId: set.id,
+        slot: set.slot,
+        real: {
+          sourceUrl: set.realSourceUrl,
+          author: set.realAuthor,
+          capturedAt: set.realCapturedAt,
+          source: set.realSourceName,
+          title: set.realTitle,
+        },
+        generation: {
+          model: set.generationModel,
+          prompt: set.generationPrompt,
+          generatedAt: set.generatedAt,
+        },
+      },
     });
   }
 
+  function generateAnalysis(slot: number, isAI: boolean) {
+    const seed = slot * 17 + (isAI ? 13 : 7);
+    const rand = (offset: number) => ((seed * 31 + offset * 47) % 100) / 100;
+    
+    if (isAI) {
+      return {
+        type: 'ai',
+        colorPalette: ['vibrant', 'saturated', 'hyper-realistic'][slot % 3],
+        artifactMarkers: ['facial asymmetry', 'hand deformities', 'text corruption'][slot % 3],
+        textureQuality: ['unnatural skin', 'perfect lighting', 'idealized features'][slot % 3],
+        symmetryScore: 60 + Math.floor(rand(1) * 30),
+        detailLevel: ['over-rendered', 'excessive clarity', 'smoothed'][slot % 3],
+        lighting: ['studio-perfect', 'dramatic', 'ethereal'][slot % 3],
+        background: ['soft blur', 'depth-of-field', 'perfect bokeh'][slot % 3],
+        patterns: ['repeating', 'mathematical', 'symmetric'][slot % 3],
+        tells: [
+          'Unnatural skin texture with visible pore smoothing',
+          'Slight asymmetry in facial features (eyebrows, ears)',
+          'Perfect but unrealistic hair strands',
+          'Background elements with AI-generated artifacts',
+        ][slot % 4],
+      };
+    } else {
+      return {
+        type: 'real',
+        colorPalette: ['natural', 'warm', 'muted'][slot % 3],
+        artifactMarkers: ['film grain', 'natural noise', 'lens artifacts'][slot % 3],
+        textureQuality: ['organic', 'realistic', 'natural imperfection'][slot % 3],
+        symmetryScore: 80 + Math.floor(rand(2) * 15),
+        detailLevel: ['natural detail', 'realistic', 'organic'][slot % 3],
+        lighting: ['natural light', 'mixed', 'available'][slot % 3],
+        background: ['natural blur', 'real depth', 'practical'][slot % 3],
+        patterns: ['natural', 'random', 'varied'][slot % 3],
+        tells: [
+          'Natural skin texture with realistic pores and variation',
+          'Authentic lighting with subtle shadows',
+          'Real background depth and bokeh',
+          'Organic imperfections typical of camera capture',
+        ][slot % 4],
+      };
+    }
+  }
+
   if (action === "categories" && req.method === "GET") {
+    const imageSets = loadImageSets();
+    const categories = listCategories(imageSets);
     const categoryCounts: Record<string, number> = {};
     for (const cat of categories) {
       categoryCounts[cat] = imageSets.filter(s => s.category === cat).length;
